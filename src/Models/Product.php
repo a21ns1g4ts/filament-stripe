@@ -53,6 +53,11 @@ class Product extends Model
         'livemode' => 'boolean',
     ];
 
+    public function getTable()
+    {
+        return config('filament-stripe.table_names.products', parent::getTable());
+    }
+
     protected static function newFactory()
     {
         return ProductFactory::new();
