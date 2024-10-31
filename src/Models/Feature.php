@@ -37,6 +37,11 @@ class Feature extends Model
         'livemode' => 'boolean',
     ];
 
+    public function getTable()
+    {
+        return config('filament-stripe.table_names.features', parent::getTable());
+    }
+
     protected static function newFactory()
     {
         return FeatureFactory::new();

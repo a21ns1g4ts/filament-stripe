@@ -33,6 +33,11 @@ class SubscriptionItem extends Model
         'quantity' => 'integer',
     ];
 
+    public function getTable()
+    {
+        return config('filament-stripe.table_names.subscription_items', parent::getTable());
+    }
+
     protected static function newFactory()
     {
         return SubscriptionItemFactory::new();

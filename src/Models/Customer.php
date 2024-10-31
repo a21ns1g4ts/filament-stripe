@@ -70,6 +70,11 @@ class Customer extends Model
         'tax' => 'array',
     ];
 
+    public function getTable()
+    {
+        return config('filament-stripe.table_names.customers', parent::getTable());
+    }
+
     protected static function newFactory()
     {
         return CustomerFactory::new();

@@ -23,13 +23,13 @@ class FilamentStripeServiceProvider extends PackageServiceProvider
             ->hasViews()
             ->hasRoutes('web')
             ->hasMigrations(
-                'create_customers_table',
-                'create_products_table',
-                'create_prices_table',
-                'create_features_table',
-                'create_feature_product_table',
-                'create_subscriptions_table',
-                'create_subscription_items_table'
+                'create_filament_stripe_customers_table',
+                'create_filament_stripe_products_table',
+                'create_filament_stripe_prices_table',
+                'create_filament_stripe_features_table',
+                'create_filament_stripe_feature_product_table',
+                'create_filament_stripe_subscriptions_table',
+                'create_filament_stripe_subscription_items_table'
             )
             ->hasCommand(WebhookCommand::class);
     }

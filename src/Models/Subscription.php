@@ -64,6 +64,11 @@ class Subscription extends Model
         'quantity',
     ];
 
+    public function getTable()
+    {
+        return config('filament-stripe.table_names.subscriptions', parent::getTable());
+    }
+
     protected static function newFactory()
     {
         return SubscriptionFactory::new();

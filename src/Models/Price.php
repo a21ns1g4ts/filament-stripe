@@ -64,6 +64,11 @@ class Price extends Model
         'transform_quantity' => 'array',
     ];
 
+    public function getTable()
+    {
+        return config('filament-stripe.table_names.prices', parent::getTable());
+    }
+
     protected static function newFactory()
     {
         return PriceFactory::new();

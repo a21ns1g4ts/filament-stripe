@@ -45,6 +45,11 @@ class FeatureProduct extends Pivot
         'unit_amount' => 'integer',
     ];
 
+    public function getTable()
+    {
+        return config('filament-stripe.table_names.feature_product', parent::getTable());
+    }
+
     public function product(): BelongsTo
     {
         return $this->belongsTo(Product::class);
