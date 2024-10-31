@@ -19,7 +19,7 @@ class UpdateProduct extends StripeBaseAction
             'images' => $data['images'] ?? null,
             'marketing_features' => $data['marketing_features'] ?? null,
             'package_dimensions' => $data['package_dimensions'] ?? null,
-            'shippable' => (bool) $data['shippable'] ?? null,
+            'shippable' => (bool) $data['shippable'],
             'statement_descriptor' => $data['statement_descriptor'] ?? null,
             'tax_code' => $data['tax_code'] ?? null,
             'unit_label' => $data['unit_label'] ?? null,
