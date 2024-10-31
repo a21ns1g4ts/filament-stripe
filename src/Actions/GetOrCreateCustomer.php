@@ -15,16 +15,18 @@ class GetOrCreateCustomer
         $data['email'] = $data['email'] ?? $billable->email;
         $data['name'] = $data['name'] ?? $billable->name;
 
-        if ($customer = Customer::where('stripe_id', $billable->stripe_id)->exists()) {
+        $billableType = $billable->getMorphClass();
+
+        if ($customer = Customer::whereBillableType($billableType)->whereBillableId($billable->id)->first()) {
             return $customer;
         }
 
         $customer = CreateCustomer::run($data['name'], $data['email'], $data);
         $data['stripe_id'] = $customer->id;
         $data['billable_id'] = $billable->id;
-        $data['billable_type'] = get_class($billable);
+        $data['billable_type'] = $billable->getMorphClass();
 
-        $customer = Customer::updateOrCreate(['stripe_id' => $data['stripe_id']], $data);
+        $customer = Customer::create($data);
 
         return $customer;
     }
