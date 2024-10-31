@@ -1,13 +1,13 @@
 <?php
 
-use A21ns1g4ts\FilamentStripe\Models\Billable;
+use A21ns1g4ts\FilamentStripe\Models\Customer;
 use A21ns1g4ts\FilamentStripe\Models\Subscription;
 
 it('can create a subscription', function () {
-    $billable = Billable::factory()->create();
+    $customer = Customer::factory()->create();
 
     $subscription = Subscription::create([
-        'billable_id' => $billable->id,
+        'customer_id' => $customer->id,
         'stripe_id' => 'sub_fake_id',
         'price' => 29.99,
         'status' => 'active',
@@ -15,7 +15,7 @@ it('can create a subscription', function () {
 
     expect($subscription)->toBeInstanceOf(Subscription::class);
     expect($subscription->status)->toBe('active');
-    expect($subscription->billable_id)->toBe($billable->id);
+    expect($subscription->customer_id)->toBe($customer->id);
 });
 
 it('can update a subscription', function () {

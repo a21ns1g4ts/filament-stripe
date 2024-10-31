@@ -3,7 +3,7 @@
 namespace A21ns1g4ts\FilamentStripe;
 
 use A21ns1g4ts\FilamentStripe\Filament\Pages\Plans;
-use A21ns1g4ts\FilamentStripe\Filament\Resources\BillableResource;
+use A21ns1g4ts\FilamentStripe\Filament\Resources\CustomerResource;
 use A21ns1g4ts\FilamentStripe\Filament\Resources\FeatureResource;
 use A21ns1g4ts\FilamentStripe\Filament\Resources\PriceResource;
 use A21ns1g4ts\FilamentStripe\Filament\Resources\ProductResource;
@@ -49,7 +49,7 @@ class FilamentStripePlugin implements Plugin
     public function register(Panel $panel): void
     {
         $panel->resources([
-            BillableResource::class,
+            CustomerResource::class,
             ProductResource::class,
             PriceResource::class,
             FeatureResource::class,

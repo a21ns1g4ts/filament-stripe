@@ -2,15 +2,15 @@
 
 namespace A21ns1g4ts\FilamentStripe\Database\Factories;
 
-use A21ns1g4ts\FilamentStripe\Models\Billable;
+use A21ns1g4ts\FilamentStripe\Models\Customer;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-class BillableFactory extends Factory
+class CustomerFactory extends Factory
 {
     /**
      * The name of the factory's corresponding model.
      */
-    protected $model = Billable::class;
+    protected $model = Customer::class;
 
     /**
      * Define the model's default state.

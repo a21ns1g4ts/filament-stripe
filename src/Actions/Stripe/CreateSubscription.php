@@ -3,20 +3,19 @@
 namespace A21ns1g4ts\FilamentStripe\Actions\Stripe;
 
 use A21ns1g4ts\FilamentStripe\Filament\Pages\Plans;
-use A21ns1g4ts\FilamentStripe\Models\Billable;
+use A21ns1g4ts\FilamentStripe\Models\Customer;
 use A21ns1g4ts\FilamentStripe\Models\Price;
-use Illuminate\Database\Eloquent\Model;
 use Lorisleiva\Actions\Concerns\AsAction;
 
 class CreateSubscription extends StripeBaseAction
 {
     use AsAction;
 
-    public function handle(Model $user, Billable $billable, Price $price, string $mode = 'subscription', array $data = [])
+    public function handle($billable, Customer $customer, Price $price, string $mode = 'subscription', array $data = [])
     {
-        $stripeCustomer = $this->stripe->customers->retrieve($billable->stripe_id);
+        $stripeCustomer = $this->stripe->customers->retrieve($customer->stripe_id);
         if (! $stripeCustomer?->default_source && ! $stripeCustomer?->invoice_settings?->default_payment_method) { // @phpstan-ignore-line
-            return Checkout::run($user, $price, $mode, $data);
+            return Checkout::run($billable, $price, $mode, $data);
         }
 
         $meteredPrices = $price->product->features()
@@ -43,7 +42,7 @@ class CreateSubscription extends StripeBaseAction
         }
 
         $this->stripe->subscriptions->create([
-            'customer' => $billable->stripe_id,
+            'customer' => $customer->stripe_id,
             'items' => $items,
         ]);
 

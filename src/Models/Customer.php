@@ -2,16 +2,17 @@
 
 namespace A21ns1g4ts\FilamentStripe\Models;
 
-use A21ns1g4ts\FilamentStripe\Database\Factories\BillableFactory;
+use A21ns1g4ts\FilamentStripe\Database\Factories\CustomerFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Stripe\Subscription as StripeSubscription;
 
 /**
  * @property string|null $stripe_id
  */
-class Billable extends Model
+class Customer extends Model
 {
     use HasFactory;
 
@@ -71,12 +72,17 @@ class Billable extends Model
 
     protected static function newFactory()
     {
-        return BillableFactory::new();
+        return CustomerFactory::new();
     }
 
     public function subscriptions(): HasMany
     {
         return $this->hasMany(Subscription::class);
+    }
+
+    public function billable(): MorphTo
+    {
+        return $this->morphTo();
     }
 
     public function subscribed(string $stripePrice): bool

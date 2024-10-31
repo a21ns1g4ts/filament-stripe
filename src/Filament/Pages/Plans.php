@@ -2,7 +2,7 @@
 
 namespace A21ns1g4ts\FilamentStripe\Filament\Pages;
 
-use A21ns1g4ts\FilamentStripe\Actions\GetOrCreateBillable;
+use A21ns1g4ts\FilamentStripe\Actions\GetOrCreateCustomer;
 use A21ns1g4ts\FilamentStripe\Actions\Stripe\BillingPortal;
 use A21ns1g4ts\FilamentStripe\Actions\Stripe\CancelSubscription;
 use A21ns1g4ts\FilamentStripe\Actions\Stripe\Checkout;
@@ -22,6 +22,7 @@ use Filament\Pages\Page;
 use Filament\Support\Enums\Alignment;
 use Filament\Support\Enums\FontWeight;
 use Illuminate\Contracts\Support\Htmlable;
+use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Str;
 use Stripe\Subscription as StripeSubscription;
 
@@ -48,15 +49,14 @@ class Plans extends Page
                 ->label('Billing Portal')
                 ->icon('heroicon-o-user-circle')
                 ->action(function () {
-                    if (isset(auth()->user()->billable)) {
-                        BillingPortal::run(auth()->user()->billable);
+                    if (self::getCostumer()) {
+                        BillingPortal::run(self::getCostumer());
                     } else {
-                        $billable = GetOrCreateBillable::run(auth()->user());
+                        $customer = GetOrCreateCustomer::run(self::getBillable());
 
-                        BillingPortal::run($billable);
+                        BillingPortal::run($customer);
                     }
                 }),
-
         ];
     }
 
@@ -79,35 +79,35 @@ class Plans extends Page
                             ->hiddenLabel()
                             ->size(TextEntry\TextEntrySize::Medium)
                             ->weight(FontWeight::SemiBold)
-                            ->formatStateUsing(fn ($state, $record) => Money::fromDecimal($state / 100, Str::upper($record->currency))),
+                            ->formatStateUsing(fn($state, $record) => Money::fromDecimal($state / 100, Str::upper($record->currency))),
                         RepeatableEntry::make('product.features')
                             ->label('Features')
                             ->schema([
                                 TextEntry::make('name')
-                                    ->formatStateUsing(fn ($record) => $record->valueing($record->pivot))
+                                    ->formatStateUsing(fn($record) => $record->valueing($record->pivot))
                                     ->hiddenLabel()
                                     ->columnSpan(1),
                                 TextEntry::make('name')
                                     ->hiddenLabel()
                                     ->columnSpan(2),
                                 TextEntry::make('name')
-                                    ->formatStateUsing(fn ($record) => $record->pricing($record->pivot))
+                                    ->formatStateUsing(fn($record) => $record->pricing($record->pivot))
                                     ->hiddenLabel()
                                     ->columnSpan(3),
                             ])->columns(6),
                         Actions::make([
                             Action::make('subscribe')
                                 ->icon('heroicon-m-check')
-                                ->label(fn ($record) => self::getBillable()?->subscribed($record->stripe_id) ? 'Subscribed' : 'Subscribe')
-                                ->hidden(fn ($record) => self::getBillable()?->subscribed($record->stripe_id))
-                                ->action(fn ($record, $action) => self::subscribe($record, $action)),
+                                ->label(fn($record) => self::getCostumer()?->subscribed($record->stripe_id) ? 'Subscribed' : 'Subscribe')
+                                ->hidden(fn($record) => self::getCostumer()?->subscribed($record->stripe_id))
+                                ->action(fn($record, $action) => self::subscribe($record, $action)),
                             Action::make('cancel')
                                 ->icon('heroicon-o-x-mark')
-                                ->label(fn ($record) => 'Cancel')
+                                ->label(fn($record) => 'Cancel')
                                 ->color('danger')
                                 ->requiresConfirmation()
-                                ->hidden(fn ($record) => ! self::getBillable()?->subscribed($record->stripe_id))
-                                ->action(fn ($record, $action) => self::cancel($record, $action)),
+                                ->hidden(fn($record) => ! self::getCostumer()?->subscribed($record->stripe_id))
+                                ->action(fn($record, $action) => self::cancel($record, $action)),
                         ])
                             ->alignment(Alignment::Center)
                             ->fullWidth(),
@@ -116,24 +116,26 @@ class Plans extends Page
             ]);
     }
 
-    private static function getBillable()
+    public static function getBillable()
     {
-        if (isset(auth()->user()->billable)) {
-            return auth()->user()->billable;
-        }
+        return Session::get('billable') ?? auth()->user();
+    }
 
-        return null;
+
+    private static function getCostumer()
+    {
+        return Session::get('customer');
     }
 
     private static function subscribe($record, $action)
     {
-        if (! isset(auth()->user()->billable)) {
-            return Checkout::run(auth()->user(), $record);
+        $customer = self::getCostumer();
+        $billable = self::getBillable();
+        if (!$customer) {
+            return Checkout::run($billable, $record);
         }
 
-        $billable = auth()->user()->billable;
-
-        $subscription = $billable->subscriptions()
+        $subscription = $customer->subscriptions()
             ->whereStatus(StripeSubscription::STATUS_ACTIVE)
             ->first();
         if ($subscription) {
@@ -145,14 +147,15 @@ class Plans extends Page
 
             $action->cancel();
         } else {
-            return CreateSubscription::run(auth()->user(), $billable, $record);
+            return CreateSubscription::run($billable, $customer, $record);
         }
-
     }
 
     private static function cancel($record, $action)
     {
-        if (! isset(auth()->user()->billable)) {
+        $customer = self::getCostumer();
+
+        if (! $customer) {
             Notification::make()
                 ->danger()
                 ->title('Not Subscribed')
@@ -164,18 +167,16 @@ class Plans extends Page
             return;
         }
 
-        $billable = auth()->user()->billable;
-
-        $subscription = $billable->subscriptions()
+        $subscription = $customer->subscriptions()
             ->where('stripe_id', $record->stripe_price)
             ->whereStatus(StripeSubscription::STATUS_ACTIVE)
             ->first();
 
         if (! $subscription) {
-            $subscription = $billable->subscriptions()
+            $subscription = $customer->subscriptions()
                 ->whereStatus(StripeSubscription::STATUS_ACTIVE)
                 ->get()
-                ->map(fn ($record) => $record->items)
+                ->map(fn($record) => $record->items)
                 ->firstWhere('stripe_price', $record->stripe_price)
                 ->first()
                 ?->subscription;
