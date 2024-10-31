@@ -5,7 +5,6 @@ namespace A21ns1g4ts\FilamentStripe\Models;
 use A21ns1g4ts\FilamentStripe\Database\Factories\FeatureFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Support\Str;
 
