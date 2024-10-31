@@ -12,7 +12,6 @@ use Filament\FilamentManager;
 use Filament\Navigation\MenuItem;
 use Filament\Panel;
 use Illuminate\Support\Facades\App;
-use Illuminate\Support\Facades\Session;
 
 class FilamentStripePlugin implements Plugin
 {
@@ -54,7 +53,7 @@ class FilamentStripePlugin implements Plugin
             ->userMenuItems([
                 'plans' => MenuItem::make()
                     ->label('Plans')
-                    ->url(fn() => Plans::getUrl(['tenant' => auth()->user()?->currentCompany?->id ?? '']))
+                    ->url(fn () => Plans::getUrl(['tenant' => auth()->user()?->currentCompany?->id ?? '']))
                     ->icon('heroicon-o-credit-card'),
             ]);
     }
