@@ -2,6 +2,7 @@
 
 namespace A21ns1g4ts\FilamentStripe\Actions\Stripe;
 
+use A21ns1g4ts\FilamentStripe\Filament\Pages\Plans;
 use A21ns1g4ts\FilamentStripe\Models\Billable;
 use A21ns1g4ts\FilamentStripe\Models\Price;
 use Illuminate\Database\Eloquent\Model;
@@ -45,5 +46,9 @@ class CreateSubscription extends StripeBaseAction
             'customer' => $billable->stripe_id,
             'items' => $items,
         ]);
+
+        sleep(2);
+
+        return redirect(Plans::getUrl());
     }
 }

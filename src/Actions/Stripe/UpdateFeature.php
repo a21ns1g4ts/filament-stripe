@@ -11,14 +11,14 @@ class UpdateFeature extends StripeBaseAction
     public function handle(string $stripeId, array $data)
     {
         $data = [
-            'name' => $data['name'],
-            'lookup_key' => $data['lookup_key'],
+            'name' => $data['name'] ?? null,
+            'lookup_key' => $data['lookup_key'] ?? null,
             // 'metadata' => $data['metadata'],
             // 'active' => $data['active'],
         ];
 
         // Stripe api will ignore keys not in $data
-        $data = array_filter($data, fn ($value) => ! is_null($value));
+        $data = array_filter($data, fn($value) => ! is_null($value));
 
         return $this->stripe->entitlements->features->update($stripeId, $data);
     }

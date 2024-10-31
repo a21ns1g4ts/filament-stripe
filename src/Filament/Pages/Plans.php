@@ -127,7 +127,6 @@ class Plans extends Page
 
     private static function subscribe($record, $action)
     {
-
         if (! isset(auth()->user()->billable)) {
             return Checkout::run(auth()->user(), $record);
         }
@@ -149,9 +148,6 @@ class Plans extends Page
             return CreateSubscription::run(auth()->user(), $billable, $record);
         }
 
-        sleep(2);
-
-        return redirect(Plans::getUrl());
     }
 
     private static function cancel($record, $action)

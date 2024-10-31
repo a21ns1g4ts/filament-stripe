@@ -2,6 +2,7 @@
 
 namespace A21ns1g4ts\FilamentStripe\Http\Controllers;
 
+use A21ns1g4ts\FilamentStripe\Actions\Stripe\UpdateCustomer;
 use A21ns1g4ts\FilamentStripe\Http\Middleware\VerifyWebhookSignature;
 use A21ns1g4ts\FilamentStripe\Models\Billable;
 use Illuminate\Http\Request;
@@ -14,6 +15,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 /* Code from Laravel Cashier */
 /* @see \Laravel\Cashier\Http\Controllers\WebhookController */
+
 class WebhookController extends Controller
 {
     public function __construct()
@@ -26,7 +28,7 @@ class WebhookController extends Controller
     public function handleWebhook(Request $request)
     {
         $payload = json_decode($request->getContent(), true);
-        $method = 'handle'.Str::studly(str_replace('.', '_', $payload['type'] ?? ''));
+        $method = 'handle' . Str::studly(str_replace('.', '_', $payload['type'] ?? ''));
 
         if (method_exists($this, $method)) {
             $this->setMaxNetworkRetries();
@@ -187,6 +189,8 @@ class WebhookController extends Controller
             'trial_start' => $data['trial_start'],
             'ends_at' => null,
         ]);
+
+        UpdateCustomer::run($data['customer'], ['invoice_settings' => ['default_payment_method' => $data['default_payment_method']]]);
     }
 
     protected function syncSubscriptionItems($subscription, $items)

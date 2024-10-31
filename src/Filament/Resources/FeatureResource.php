@@ -38,13 +38,6 @@ class FeatureResource extends Resource
                             ->columnSpan(2),
                     ])->columns(3),
 
-                Forms\Components\Section::make('Price and Product Information')
-                    ->schema([
-                        Forms\Components\Select::make('product_id')
-                            ->relationship('product', 'name')
-                            ->nullable(),
-                    ])->columns(3),
-
                 Forms\Components\Section::make('Product Settings')
                     ->schema([
                         Forms\Components\TextInput::make('name')
@@ -69,11 +62,6 @@ class FeatureResource extends Resource
                     ->searchable(),
                 Tables\Columns\TextColumn::make('stripe_id')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('product.name')
-                    ->searchable(),
-                Tables\Columns\IconColumn::make('resetable'),
-                Tables\Columns\IconColumn::make('unlimited'),
-                Tables\Columns\IconColumn::make('meteread'),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()

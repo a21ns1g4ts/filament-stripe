@@ -20,8 +20,6 @@ class Feature extends Model
      */
     protected $fillable = [
         'stripe_id',
-        'product_id',
-        'stripe_price',
         'name',
         'lookup_key',
         'active',
@@ -43,11 +41,6 @@ class Feature extends Model
     protected static function newFactory()
     {
         return FeatureFactory::new();
-    }
-
-    public function product(): BelongsTo
-    {
-        return $this->belongsTo(Product::class);
     }
 
     public function products(): BelongsToMany

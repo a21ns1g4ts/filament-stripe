@@ -20,9 +20,11 @@ class Checkout extends StripeBaseAction
     public function handle(Model $user, Price $price, string $mode = 'subscription', array $data = [])
     {
         $meteredPrices = $price->product->features()
-            ->whereNotNull('stripe_price')
+            ->wherePivot('price_id', '!=', null)
             ->wherePivot('meteread', true)
-            ->pluck('stripe_price')
+            ->get()
+            ->pluck('pivot.price.stripe_id')
+            ->filter()
             ->toArray();
 
         $lineItems = [

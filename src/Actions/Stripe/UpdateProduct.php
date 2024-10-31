@@ -10,20 +10,25 @@ class UpdateProduct extends StripeBaseAction
 
     public function handle(string $stripeId, array $data)
     {
-        return $this->stripe->products->update($stripeId, [
-            'name' => $data['name'],
-            'description' => $data['description'],
-            'metadata' => $data['metadata'],
-            'active' => $data['active'],
-            'default_price' => $data['default_price'],
-            'images' => $data['images'],
-            'marketing_features' => $data['marketing_features'],
-            'package_dimensions' => $data['package_dimensions'],
-            'shippable' => (bool) $data['shippable'],
-            'statement_descriptor' => $data['statement_descriptor'],
-            'tax_code' => $data['tax_code'],
-            'unit_label' => $data['unit_label'],
-            'url' => $data['url'],
-        ]);
+        $data = [
+            'name' => $data['name'] ?? null,
+            'description' => $data['description'] ?? null,
+            'metadata' => $data['metadata'] ?? null,
+            'active' => $data['active'] ?? null,
+            'default_price' => $data['default_price'] ?? null,
+            'images' => $data['images'] ?? null,
+            'marketing_features' => $data['marketing_features'] ?? null,
+            'package_dimensions' => $data['package_dimensions'] ?? null,
+            'shippable' => (bool) $data['shippable'] ?? null,
+            'statement_descriptor' => $data['statement_descriptor'] ?? null,
+            'tax_code' => $data['tax_code'] ?? null,
+            'unit_label' => $data['unit_label'] ?? null,
+            'url' => $data['url'] ?? null,
+        ];
+
+        // Stripe api will ignore keys not in $data
+        $data = array_filter($data, fn($value) => ! is_null($value));
+
+        return $this->stripe->products->update($stripeId, $data);
     }
 }
