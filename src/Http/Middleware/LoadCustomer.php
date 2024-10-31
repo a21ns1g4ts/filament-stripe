@@ -9,16 +9,13 @@ use Illuminate\Support\Facades\Session;
 
 class LoadCustomer
 {
-     /**
+    /**
      * The Guard implementation.
      *
      * @var \Illuminate\Contracts\Auth\Guard
      */
     protected $auth;
 
-    /**
-     * @param \Illuminate\Contracts\Auth\Guard $auth
-     */
     public function __construct(Guard $auth)
     {
         $this->auth = $auth;
@@ -35,7 +32,7 @@ class LoadCustomer
     public function handle($request, Closure $next)
     {
         $billable = $this->auth->user();
-        if($billable) {
+        if ($billable) {
             $customer = Customer::whereBillableType('user')->whereBillableId($billable->id)->first();
             Session::put('customer', $customer);
             Session::put('billable', $billable);

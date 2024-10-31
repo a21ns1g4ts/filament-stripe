@@ -14,7 +14,7 @@ class CreateMeterEvent extends StripeBaseAction
         $data['name'] = $name;
         $data['payload'] = [
             'value' => $value,
-            'stripe_customer_id' => $customerId
+            'stripe_customer_id' => $customerId,
         ];
 
         return $this->stripe->billing->meterEvents->create($data);
