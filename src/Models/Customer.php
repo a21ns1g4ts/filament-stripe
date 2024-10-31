@@ -23,6 +23,8 @@ class Customer extends Model
      */
     protected $fillable = [
         'stripe_id',
+        'billable_id',
+        'billable_type',
         'address',
         'balance',
         'cash_balance',

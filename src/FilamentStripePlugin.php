@@ -12,6 +12,7 @@ use Filament\FilamentManager;
 use Filament\Navigation\MenuItem;
 use Filament\Panel;
 use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Session;
 
 class FilamentStripePlugin implements Plugin
 {
@@ -37,13 +38,6 @@ class FilamentStripePlugin implements Plugin
         if (App::runningInConsole()) {
             return;
         }
-
-        $panel->userMenuItems([
-            'plans' => MenuItem::make()
-                ->label('Plans')
-                ->url(fn () => Plans::getUrl())
-                ->icon('heroicon-o-credit-card'),
-        ]);
     }
 
     public function register(Panel $panel): void
@@ -56,6 +50,12 @@ class FilamentStripePlugin implements Plugin
         ])
             ->pages([
                 Plans::class,
+            ])
+            ->userMenuItems([
+                'plans' => MenuItem::make()
+                    ->label('Plans')
+                    ->url(fn() => Plans::getUrl(['tenant' => auth()->user()?->currentCompany?->id ?? '']))
+                    ->icon('heroicon-o-credit-card'),
             ]);
     }
 }
