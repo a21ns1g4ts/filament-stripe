@@ -18,7 +18,7 @@ class UpdateCustomer extends StripeBaseAction
             'name' => $data['name'] ?? null,
             'phone' => $data['phone'] ?? null,
             'shipping' => $data['shipping'] ?? null,
-            'balance' => $data['balance'] ??  null,
+            'balance' => $data['balance'] ?? null,
             'cash_balance' => $data['cash_balance'] ?? null,
             'coupon' => $data['coupon'] ?? null,
             'default_source' => $data['default_source'] ?? null,
@@ -33,7 +33,7 @@ class UpdateCustomer extends StripeBaseAction
         ];
 
         // Stripe api will ignore keys not in $data
-        $data = array_filter($data, fn($value) => ! is_null($value));
+        $data = array_filter($data, fn ($value) => ! is_null($value));
 
         return $this->stripe->customers->update($stripeId, $data);
     }

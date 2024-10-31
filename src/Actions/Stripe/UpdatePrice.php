@@ -22,7 +22,7 @@ class UpdatePrice extends StripeBaseAction
         ];
 
         // Stripe api will ignore keys not in $data
-        $data = array_filter($data, fn($value) => ! is_null($value));
+        $data = array_filter($data, fn ($value) => ! is_null($value));
 
         return $this->stripe->prices->update($stripeId, $data);
     }
