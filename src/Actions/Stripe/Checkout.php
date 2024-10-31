@@ -2,10 +2,9 @@
 
 namespace A21ns1g4ts\FilamentStripe\Actions\Stripe;
 
-use A21ns1g4ts\FilamentStripe\Actions\GetOrCreateBillable;
+use A21ns1g4ts\FilamentStripe\Actions\GetOrCreateCustomer;
 use A21ns1g4ts\FilamentStripe\Filament\Pages\Plans;
 use A21ns1g4ts\FilamentStripe\Models\Price;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Redirect;
 use Lorisleiva\Actions\Concerns\AsAction;
 
@@ -17,12 +16,14 @@ class Checkout extends StripeBaseAction
     /**
      * Handle the checkout session creation.
      */
-    public function handle(Model $user, Price $price, string $mode = 'subscription', array $data = [])
+    public function handle($billable, Price $price, string $mode = 'subscription', array $data = [])
     {
         $meteredPrices = $price->product->features()
-            ->whereNotNull('stripe_price')
+            ->wherePivot('price_id', '!=', null)
             ->wherePivot('meteread', true)
-            ->pluck('stripe_price')
+            ->get()
+            ->pluck('pivot.price.stripe_id')
+            ->filter()
             ->toArray();
 
         $lineItems = [
@@ -38,10 +39,10 @@ class Checkout extends StripeBaseAction
             ];
         }
 
-        $billable = GetOrCreateBillable::run($user, $data);
+        $customer = GetOrCreateCustomer::run($billable, $data);
 
         $data = array_merge($data, [
-            'customer' => $billable->stripe_id,
+            'customer' => $customer->stripe_id,
             'line_items' => $lineItems,
             'mode' => $mode,
             'ui_mode' => 'hosted',

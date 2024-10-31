@@ -2,8 +2,9 @@
 
 namespace A21ns1g4ts\FilamentStripe\Http\Controllers;
 
+use A21ns1g4ts\FilamentStripe\Actions\Stripe\UpdateCustomer;
 use A21ns1g4ts\FilamentStripe\Http\Middleware\VerifyWebhookSignature;
-use A21ns1g4ts\FilamentStripe\Models\Billable;
+use A21ns1g4ts\FilamentStripe\Models\Customer;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Carbon;
@@ -14,6 +15,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 /* Code from Laravel Cashier */
 /* @see \Laravel\Cashier\Http\Controllers\WebhookController */
+
 class WebhookController extends Controller
 {
     public function __construct()
@@ -37,14 +39,16 @@ class WebhookController extends Controller
         return $this->missingMethod($payload);
     }
 
+    /*************  ✨ Codeium Command ⭐  *************/
+    /******  b5592ae7-6b7a-4b79-95b3-79874a42afcd  *******/
     protected function handleCustomerSubscriptionCreated(array $payload)
     {
-        $billable = Billable::where('stripe_id', $payload['data']['object']['customer'] ?? null)->first();
+        $customer = Customer::where('stripe_id', $payload['data']['object']['customer'] ?? null)->first();
 
-        if ($billable) {
+        if ($customer) {
             $data = $payload['data']['object'];
-            if (! $billable->subscriptions->contains('stripe_id', $data['id'])) {
-                $this->createSubscription($billable, $data);
+            if (! $customer->subscriptions->contains('stripe_id', $data['id'])) {
+                $this->createSubscription($customer, $data);
             }
         }
 
@@ -53,10 +57,10 @@ class WebhookController extends Controller
 
     protected function handleCustomerSubscriptionUpdated(array $payload)
     {
-        $billable = Billable::where('stripe_id', $payload['data']['object']['customer'] ?? null)->first();
-        if ($billable) {
+        $customer = Customer::where('stripe_id', $payload['data']['object']['customer'] ?? null)->first();
+        if ($customer) {
             $data = $payload['data']['object'];
-            $subscription = $billable->subscriptions()->firstOrNew(['stripe_id' => $data['id']]);
+            $subscription = $customer->subscriptions()->firstOrNew(['stripe_id' => $data['id']]);
 
             if ($data['status'] === StripeSubscription::STATUS_INCOMPLETE_EXPIRED) {
                 $subscription->items()->delete();
@@ -74,9 +78,9 @@ class WebhookController extends Controller
 
     protected function handleCustomerSubscriptionDeleted(array $payload)
     {
-        $billable = Billable::where('stripe_id', $payload['data']['object']['customer'] ?? null)->first();
-        if ($billable) {
-            $subscription = $billable->subscriptions()
+        $customer = Customer::where('stripe_id', $payload['data']['object']['customer'] ?? null)->first();
+        if ($customer) {
+            $subscription = $customer->subscriptions()
                 ->where('stripe_id', $payload['data']['object']['id'])
                 ->first();
 
@@ -91,12 +95,12 @@ class WebhookController extends Controller
         return $this->successResponse();
     }
 
-    protected function createSubscription($billable, $data)
+    protected function createSubscription($customer, $data)
     {
         $firstItem = $data['items']['data'][0];
         $isSinglePrice = count($data['items']['data']) === 1;
 
-        $subscription = $billable->subscriptions()->create([
+        $subscription = $customer->subscriptions()->create([
             'stripe_id' => $data['id'],
             'stripe_price' => $isSinglePrice ? $firstItem['price']['id'] : null,
             'quantity' => $isSinglePrice ? ($firstItem['quantity'] ?? null) : null,
@@ -187,6 +191,8 @@ class WebhookController extends Controller
             'trial_start' => $data['trial_start'],
             'ends_at' => null,
         ]);
+
+        UpdateCustomer::run($data['customer'], ['invoice_settings' => ['default_payment_method' => $data['default_payment_method']]]);
     }
 
     protected function syncSubscriptionItems($subscription, $items)

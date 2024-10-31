@@ -1,16 +1,16 @@
 <?php
 
-namespace A21ns1g4ts\FilamentStripe\Filament\Resources\BillableResource\Pages;
+namespace A21ns1g4ts\FilamentStripe\Filament\Resources\CustomerResource\Pages;
 
 use A21ns1g4ts\FilamentStripe\Actions\UpFromStripe;
 use A21ns1g4ts\FilamentStripe\Actions\UpToStripe;
-use A21ns1g4ts\FilamentStripe\Filament\Resources\BillableResource;
+use A21ns1g4ts\FilamentStripe\Filament\Resources\CustomerResource;
 use Filament\Actions;
 use Filament\Resources\Pages\EditRecord;
 
-class EditBillable extends EditRecord
+class EditCustomer extends EditRecord
 {
-    protected static string $resource = BillableResource::class;
+    protected static string $resource = CustomerResource::class;
 
     protected function getHeaderActions(): array
     {

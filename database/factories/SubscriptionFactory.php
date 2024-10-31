@@ -2,7 +2,7 @@
 
 namespace A21ns1g4ts\FilamentStripe\Database\Factories;
 
-use A21ns1g4ts\FilamentStripe\Models\Billable;
+use A21ns1g4ts\FilamentStripe\Models\Customer;
 use A21ns1g4ts\FilamentStripe\Models\Subscription;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -20,7 +20,7 @@ class SubscriptionFactory extends Factory
     {
         return [
             'stripe_id' => $this->faker->word(),
-            'billable_id' => Billable::factory(),
+            'customer_id' => Customer::factory(),
             'stripe_price' => $this->faker->word(),
             'status' => $this->faker->randomElement(['incomplete', 'incomplete_expired', 'trialing', 'active', 'past_due', 'canceled', 'unpaid', 'or paused']),
             'cancel_at_period_end' => $this->faker->boolean(),

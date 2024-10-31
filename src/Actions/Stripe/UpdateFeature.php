@@ -11,8 +11,8 @@ class UpdateFeature extends StripeBaseAction
     public function handle(string $stripeId, array $data)
     {
         $data = [
-            'name' => $data['name'],
-            'lookup_key' => $data['lookup_key'],
+            'name' => $data['name'] ?? null,
+            'lookup_key' => $data['lookup_key'] ?? null,
             // 'metadata' => $data['metadata'],
             // 'active' => $data['active'],
         ];

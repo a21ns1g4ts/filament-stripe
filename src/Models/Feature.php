@@ -5,7 +5,6 @@ namespace A21ns1g4ts\FilamentStripe\Models;
 use A21ns1g4ts\FilamentStripe\Database\Factories\FeatureFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Support\Str;
 
@@ -20,8 +19,6 @@ class Feature extends Model
      */
     protected $fillable = [
         'stripe_id',
-        'product_id',
-        'stripe_price',
         'name',
         'lookup_key',
         'active',
@@ -43,11 +40,6 @@ class Feature extends Model
     protected static function newFactory()
     {
         return FeatureFactory::new();
-    }
-
-    public function product(): BelongsTo
-    {
-        return $this->belongsTo(Product::class);
     }
 
     public function products(): BelongsToMany

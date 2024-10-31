@@ -23,7 +23,7 @@ class Subscription extends Model
     protected $fillable = [
         'stripe_id',
         'stripe_price',
-        'billable_id',
+        'customer_id',
         'status',
         'cancel_at_period_end',
         'currency',
@@ -102,9 +102,9 @@ class Subscription extends Model
         'quantity' => 'integer',
     ];
 
-    public function billable(): BelongsTo
+    public function customer(): BelongsTo
     {
-        return $this->belongsTo(Billable::class);
+        return $this->belongsTo(Customer::class);
     }
 
     public function items(): HasMany

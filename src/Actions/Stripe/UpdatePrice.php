@@ -11,14 +11,14 @@ class UpdatePrice extends StripeBaseAction
     public function handle(string $stripeId, array $data)
     {
         $data = [
-            'currency_options' => $data['currency_options'],
-            'metadata' => $data['metadata'],
-            'active' => $data['active'],
-            'nickname' => $data['nickname'],
-            'tax_behavior' => $data['tax_behavior'],
-            'unit_label' => $data['unit_label'],
-            'lookup_key' => $data['lookup_key'],
-            'transfer_lookup_key' => $data['transfer_lookup_key'],
+            'currency_options' => $data['currency_options'] ?? null,
+            'metadata' => $data['metadata'] ?? null,
+            'active' => $data['active'] ?? null,
+            'nickname' => $data['nickname'] ?? null,
+            'tax_behavior' => $data['tax_behavior'] ?? null,
+            'unit_label' => $data['unit_label'] ?? null,
+            'lookup_key' => $data['lookup_key'] ?? null,
+            'transfer_lookup_key' => $data['transfer_lookup_key'] ?? null,
         ];
 
         // Stripe api will ignore keys not in $data

@@ -23,7 +23,7 @@ class FilamentStripeServiceProvider extends PackageServiceProvider
             ->hasViews()
             ->hasRoutes('web')
             ->hasMigrations(
-                'create_billables_table',
+                'create_customers_table',
                 'create_products_table',
                 'create_prices_table',
                 'create_features_table',
