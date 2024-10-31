@@ -49,7 +49,7 @@ class Feature extends Model
 
     public function products(): BelongsToMany
     {
-        return $this->belongsToMany(Product::class)
+        return $this->belongsToMany(Product::class, config('filament-stripe.table_names.feature_product'))
             ->using(FeatureProduct::class)
             ->withPivot('value', 'unit_amount', 'sort', 'price_id', 'product_id', 'feature_id', 'meteread', 'unlimited', 'resetable')
             ->withTimestamps();
