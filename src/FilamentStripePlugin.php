@@ -53,7 +53,8 @@ class FilamentStripePlugin implements Plugin
             ->userMenuItems([
                 'plans' => MenuItem::make()
                     ->label('Plans')
-                    ->url(fn () => Plans::getUrl(['tenant' => auth()->user()?->currentCompany?->id ?? '']))
+                    ->hidden(fn () => !isset(auth()->user()->currentCompany))
+                    ->url(fn () => Plans::getUrl(['tenant' => auth()->user()?->currentCompany?->id]))
                     ->icon('heroicon-o-credit-card'),
             ]);
     }
