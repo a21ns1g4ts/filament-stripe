@@ -41,21 +41,24 @@ class FilamentStripePlugin implements Plugin
 
     public function register(Panel $panel): void
     {
-        $panel->resources([
-            CustomerResource::class,
-            ProductResource::class,
-            PriceResource::class,
-            FeatureResource::class,
-        ])
-            ->pages([
+        $panel->pages([
                 Plans::class,
             ])
             ->userMenuItems([
                 'plans' => MenuItem::make()
                     ->label('Plans')
-                    ->hidden(fn () => ! isset(auth()->user()->currentCompany))
+                    ->hidden(fn () => ! auth()->user()->can('page_Plans'))
                     ->url(fn () => Plans::getUrl(['tenant' => auth()->user()?->currentCompany?->id]))
                     ->icon('heroicon-o-credit-card'),
             ]);
+
+            if($panel->getId() === 'sysadmin'){
+                $panel->resources([
+                    CustomerResource::class,
+                    ProductResource::class,
+                    PriceResource::class,
+                    FeatureResource::class,
+                ]);
+            }
     }
 }
