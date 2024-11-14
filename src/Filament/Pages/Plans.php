@@ -39,14 +39,14 @@ class Plans extends Page
 
     public function getTitle(): string|Htmlable
     {
-        return 'Plans';
+        return __('filament-stripe::default.plans.title');
     }
 
     protected function getHeaderActions(): array
     {
         return [
             FilamentActions\Action::make('billingPortal')
-                ->label('Billing Portal')
+                ->label(__('filament-stripe::default.billing-portal.title'))
                 ->icon('heroicon-o-user-circle')
                 ->action(function () {
                     if (self::getCostumer()) {
@@ -98,12 +98,12 @@ class Plans extends Page
                         Actions::make([
                             Action::make('subscribe')
                                 ->icon('heroicon-m-check')
-                                ->label(fn ($record) => self::getCostumer()?->subscribed($record->stripe_id) ? 'Subscribed' : 'Subscribe')
+                                ->label(fn ($record) => self::getCostumer()?->subscribed($record->stripe_id) ? __('filament-stripe::default.plans.subscribed') : __('filament-stripe::default.plans.subscribe'))
                                 ->hidden(fn ($record) => self::getCostumer()?->subscribed($record->stripe_id))
                                 ->action(fn ($record, $action) => self::subscribe($record, $action)),
                             Action::make('cancel')
                                 ->icon('heroicon-o-x-mark')
-                                ->label(fn ($record) => 'Cancel')
+                                ->label(fn ($record) => __('filament-stripe::default.plans.cancel'))
                                 ->color('danger')
                                 ->requiresConfirmation()
                                 ->hidden(fn ($record) => ! self::getCostumer()?->subscribed($record->stripe_id))
@@ -140,8 +140,8 @@ class Plans extends Page
         if ($subscription) {
             Notification::make()
                 ->danger()
-                ->title('Already Subscribed')
-                ->body("You're already subscribed to another plan. Cancel it before you subscribe to another plan.")
+                ->title(__('filament-stripe::default.plans.notify.already_subscribed.title'))
+                ->body(__('filament-stripe::default.plans.notify.already_subscribed.body'))
                 ->send();
 
             $action->cancel();
@@ -157,8 +157,8 @@ class Plans extends Page
         if (! $customer) {
             Notification::make()
                 ->danger()
-                ->title('Not Subscribed')
-                ->body("You're not subscribed to this plan. Subscribe before you cancel.")
+                ->title(__('filament-stripe::default.plans.notify.not_subscribed.title'))
+                ->body(__('filament-stripe::default.plans.notify.not_subscribed.body'))
                 ->send();
 
             $action->cancel();
@@ -186,15 +186,15 @@ class Plans extends Page
             if ($stripeSubscription) {
                 Notification::make()
                     ->success()
-                    ->title('Subscription Canceled')
-                    ->body('Your subscription has been canceled.')
+                    ->title(__('filament-stripe::default.plans.notify.subscription_canceled.title'))
+                    ->body(__('filament-stripe::default.plans.notify.subscription_canceled.body'))
                     ->send();
             }
         } else {
             Notification::make()
                 ->danger()
-                ->title('Subscription Cant be Canceled')
-                ->body('You cannot cancel this subscription.')
+                ->title(__('filament-stripe::default.plans.notify.subscription_cant_canceled.title'))
+                ->body(__('filament-stripe::default.plans.notify.subscription_cant_canceled.body'))
                 ->persistent()
                 ->send();
 

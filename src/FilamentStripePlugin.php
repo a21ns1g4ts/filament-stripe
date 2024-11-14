@@ -42,23 +42,36 @@ class FilamentStripePlugin implements Plugin
     public function register(Panel $panel): void
     {
         $panel->pages([
-                Plans::class,
-            ])
+            Plans::class,
+        ])
             ->userMenuItems([
                 'plans' => MenuItem::make()
-                    ->label('Plans')
-                    ->hidden(fn () => ! auth()->user()->can('page_Plans'))
-                    ->url(fn () => Plans::getUrl(['tenant' => auth()->user()?->currentCompany?->id]))
+                    ->label(__('filament-stripe::default.plans.title'))
+                    ->hidden(fn() => ! auth()->user()?->can('page_Plans'))
+                    ->url(fn() => $this->getPageUrl($panel))
                     ->icon('heroicon-o-credit-card'),
             ]);
 
-            if($panel->getId() === 'sysadmin'){
-                $panel->resources([
-                    CustomerResource::class,
-                    ProductResource::class,
-                    PriceResource::class,
-                    FeatureResource::class,
-                ]);
-            }
+        if ($panel->getId() === 'sysadmin') {
+            $panel->resources([
+                CustomerResource::class,
+                ProductResource::class,
+                PriceResource::class,
+                FeatureResource::class,
+            ]);
+        }
+    }
+
+    private function getPageUrl(Panel $panel)
+    {
+        if ($panel->getId() === 'admin' && auth()->user()?->currentCompany?->id) {
+            return Plans::getUrl(['tenant' => auth()->user()?->currentCompany?->id]);
+        }
+
+        if ($panel->getId() === 'admin' && !auth()->user()?->currentCompany?->id) {
+            return '#';
+        }
+
+        return Plans::getUrl();
     }
 }

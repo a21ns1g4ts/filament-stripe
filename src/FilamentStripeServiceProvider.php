@@ -20,6 +20,7 @@ class FilamentStripeServiceProvider extends PackageServiceProvider
         $package
             ->name('filament-stripe')
             ->hasConfigFile()
+            ->hasTranslations()
             ->hasViews()
             ->hasRoutes('web')
             ->hasMigrations(
