@@ -47,8 +47,8 @@ class FilamentStripePlugin implements Plugin
             ->userMenuItems([
                 'plans' => MenuItem::make()
                     ->label(__('filament-stripe::default.plans.title'))
-                    ->hidden(fn() => ! auth()->user()?->can('page_Plans'))
-                    ->url(fn() => $this->getPageUrl($panel))
+                    ->hidden(fn () => ! auth()->user()?->can('page_Plans'))
+                    ->url(fn () => $this->getPageUrl($panel))
                     ->icon('heroicon-o-credit-card'),
             ]);
 
@@ -68,7 +68,7 @@ class FilamentStripePlugin implements Plugin
             return Plans::getUrl(['tenant' => auth()->user()?->currentCompany?->id]);
         }
 
-        if ($panel->getId() === 'admin' && !auth()->user()?->currentCompany?->id) {
+        if ($panel->getId() === 'admin' && ! auth()->user()?->currentCompany?->id) {
             return '#';
         }
 

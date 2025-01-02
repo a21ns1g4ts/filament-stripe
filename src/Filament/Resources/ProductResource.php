@@ -26,6 +26,11 @@ class ProductResource extends Resource
 
     protected static ?string $navigationGroup = 'Stripe';
 
+    public static function isScopedToTenant(): bool
+    {
+        return config('filament-stripe.tenant_scope', false);
+    }
+
     public static function form(Form $form): Form
     {
         $products = Product::pluck('name', 'stripe_id');

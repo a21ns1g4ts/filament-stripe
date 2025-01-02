@@ -21,6 +21,11 @@ class PriceResource extends Resource
 
     protected static ?string $navigationGroup = 'Stripe';
 
+    public static function isScopedToTenant(): bool
+    {
+        return config('filament-stripe.tenant_scope', false);
+    }
+
     public static function form(Form $form): Form
     {
         $prices = Price::pluck('nickname', 'stripe_id');

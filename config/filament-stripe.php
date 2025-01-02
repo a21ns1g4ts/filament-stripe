@@ -1,6 +1,7 @@
 <?php
 
 return [
+    'tenant_scope' => false,
     'table_names' => [
         'customers' => 'filament_stripe_customers',
         'products' => 'filament_stripe_products',

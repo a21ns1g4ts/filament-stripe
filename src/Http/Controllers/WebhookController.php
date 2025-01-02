@@ -39,8 +39,6 @@ class WebhookController extends Controller
         return $this->missingMethod($payload);
     }
 
-    /*************  ✨ Codeium Command ⭐  *************/
-    /******  b5592ae7-6b7a-4b79-95b3-79874a42afcd  *******/
     protected function handleCustomerSubscriptionCreated(array $payload)
     {
         $customer = Customer::where('stripe_id', $payload['data']['object']['customer'] ?? null)->first();
