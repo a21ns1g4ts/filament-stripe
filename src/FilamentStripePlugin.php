@@ -46,9 +46,9 @@ class FilamentStripePlugin implements Plugin
         ])
             ->userMenuItems([
                 'plans' => MenuItem::make()
-                    ->label(fn() => __('filament-stripe::default.plans.title'))
-                    ->hidden(fn() => ! auth()->user()?->can('page_Plans'))
-                    ->url(fn() => $this->getPageUrl($panel))
+                    ->label(fn () => __('filament-stripe::default.plans.title'))
+                    ->hidden(fn () => ! auth()->user()?->can('page_Plans'))
+                    ->url(fn () => $this->getPageUrl($panel))
                     ->icon('heroicon-o-credit-card'),
             ]);
 
