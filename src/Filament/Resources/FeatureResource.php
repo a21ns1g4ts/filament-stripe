@@ -22,7 +22,8 @@ class FeatureResource extends Resource
 
     protected static ?string $navigationGroup = 'Stripe';
 
-    protected static string $slug = 'stripe/features';
+    protected static ?string $slug = 'stripe/features';
+
     public static function isScopedToTenant(): bool
     {
         return config('filament-stripe.tenant_scope', false);

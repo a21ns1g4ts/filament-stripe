@@ -21,7 +21,8 @@ class CustomerResource extends Resource
 
     protected static ?string $navigationGroup = 'Stripe';
 
-    protected static string $slug = 'stripe/customers';
+    protected static ?string $slug = 'stripe/customers';
+
     public static function isScopedToTenant(): bool
     {
         return config('filament-stripe.tenant_scope', false);

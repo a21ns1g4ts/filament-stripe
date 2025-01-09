@@ -26,7 +26,7 @@ class ProductResource extends Resource
 
     protected static ?string $navigationGroup = 'Stripe';
 
-    protected static string $slug = 'stripe/products';
+    protected static ?string $slug = 'stripe/products';
 
     public static function isScopedToTenant(): bool
     {
