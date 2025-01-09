@@ -95,13 +95,13 @@ class Customer extends Model
     public function subscribed(string $stripePrice): bool
     {
         $subscription = $this->subscriptions()
-            ->whereStatus(StripeSubscription::STATUS_ACTIVE)
+            ->whereIn('status', [StripeSubscription::STATUS_ACTIVE, StripeSubscription::STATUS_TRIALING])
             ->where('stripe_price', $stripePrice)
             ->first();
 
         if (! $subscription) {
             $subscription = $this->subscriptions()
-                ->whereStatus(StripeSubscription::STATUS_ACTIVE)
+                ->whereIn('status', [StripeSubscription::STATUS_ACTIVE, StripeSubscription::STATUS_TRIALING])
                 ->whereHas('items', function ($query) use ($stripePrice) {
                     $query->where('stripe_price', $stripePrice);
                 })

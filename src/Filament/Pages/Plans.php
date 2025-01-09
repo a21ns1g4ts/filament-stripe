@@ -173,7 +173,7 @@ class Plans extends Page
 
         if (! $subscription) {
             $subscription = $customer->subscriptions()
-                ->whereStatus(StripeSubscription::STATUS_ACTIVE)
+                ->whereIn('status', [StripeSubscription::STATUS_ACTIVE, StripeSubscription::STATUS_TRIALING])
                 ->get()
                 ->map(fn ($record) => $record->items)
                 ->firstWhere('stripe_price', $record->stripe_price)
