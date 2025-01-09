@@ -73,41 +73,41 @@ class Plans extends Page
                             ->hiddenLabel()
                             ->size(TextEntry\TextEntrySize::Large)
                             ->weight(FontWeight::Bold)
-                            ->formatStateUsing(fn($record) => Str::title($record->product->name))
+                            ->formatStateUsing(fn ($record) => Str::title($record->product->name))
                             ->color('primary'),
                         TextEntry::make('unit_amount')
                             ->hiddenLabel()
                             ->size(TextEntry\TextEntrySize::Medium)
                             ->weight(FontWeight::SemiBold)
-                            ->currency(fn($state, $record) => Str::upper($record->currency)),
+                            ->currency(fn ($state, $record) => Str::upper($record->currency)),
                         RepeatableEntry::make('product.features')
                             ->label('Features')
                             ->schema([
                                 TextEntry::make('name')
-                                    ->formatStateUsing(fn($record) => $record->valueing($record->pivot))
+                                    ->formatStateUsing(fn ($record) => $record->valueing($record->pivot))
                                     ->hiddenLabel()
                                     ->columnSpan(1),
                                 TextEntry::make('name')
                                     ->hiddenLabel()
                                     ->columnSpan(2),
                                 TextEntry::make('name')
-                                    ->formatStateUsing(fn($record) => $record->pricing($record->pivot))
+                                    ->formatStateUsing(fn ($record) => $record->pricing($record->pivot))
                                     ->hiddenLabel()
                                     ->columnSpan(3),
                             ])->columns(6),
                         Actions::make([
                             Action::make('subscribe')
                                 ->icon('heroicon-m-check')
-                                ->label(fn($record) => self::getCostumer()?->subscribed($record->stripe_id) ? __('filament-stripe::default.plans.subscribed') : __('filament-stripe::default.plans.subscribe'))
-                                ->hidden(fn($record) => self::getCostumer()?->subscribed($record->stripe_id))
-                                ->action(fn($record, $action) => self::subscribe($record, $action)),
+                                ->label(fn ($record) => self::getCostumer()?->subscribed($record->stripe_id) ? __('filament-stripe::default.plans.subscribed') : __('filament-stripe::default.plans.subscribe'))
+                                ->hidden(fn ($record) => self::getCostumer()?->subscribed($record->stripe_id))
+                                ->action(fn ($record, $action) => self::subscribe($record, $action)),
                             Action::make('cancel')
                                 ->icon('heroicon-o-x-mark')
-                                ->label(fn($record) => __('filament-stripe::default.plans.cancel'))
+                                ->label(fn ($record) => __('filament-stripe::default.plans.cancel'))
                                 ->color('danger')
                                 ->requiresConfirmation()
-                                ->hidden(fn($record) => ! self::getCostumer()?->subscribed($record->stripe_id))
-                                ->action(fn($record, $action) => self::cancel($record, $action)),
+                                ->hidden(fn ($record) => ! self::getCostumer()?->subscribed($record->stripe_id))
+                                ->action(fn ($record, $action) => self::cancel($record, $action)),
                         ])
                             ->alignment(Alignment::Center)
                             ->fullWidth(),
@@ -175,7 +175,7 @@ class Plans extends Page
             $subscription = $customer->subscriptions()
                 ->whereStatus(StripeSubscription::STATUS_ACTIVE)
                 ->get()
-                ->map(fn($record) => $record->items)
+                ->map(fn ($record) => $record->items)
                 ->firstWhere('stripe_price', $record->stripe_price)
                 ->first()
                 ?->subscription;
