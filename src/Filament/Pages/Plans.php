@@ -73,6 +73,7 @@ class Plans extends Page
                             ->hiddenLabel()
                             ->size(TextEntry\TextEntrySize::Large)
                             ->weight(FontWeight::Bold)
+                            ->formatStateUsing(fn($record) => Str::title($record->product->name))
                             ->color('primary'),
                         TextEntry::make('unit_amount')
                             ->hiddenLabel()
