@@ -17,7 +17,7 @@
     ],
     "require": {
         "php": "^8.2",
-        "archtechx/money": "^0.5.1",
+        "ariaieboy/filament-currency": "^1.10",
         "filament/filament": "^3.2",
         "illuminate/contracts": "^10.0||^11.0",
         "lorisleiva/laravel-actions": "^2.8",

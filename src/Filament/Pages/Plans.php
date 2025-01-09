@@ -8,7 +8,6 @@ use A21ns1g4ts\FilamentStripe\Actions\Stripe\CancelSubscription;
 use A21ns1g4ts\FilamentStripe\Actions\Stripe\Checkout;
 use A21ns1g4ts\FilamentStripe\Actions\Stripe\CreateSubscription;
 use A21ns1g4ts\FilamentStripe\Models\Price;
-use ArchTech\Money\Money;
 use Filament\Actions as FilamentActions;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Infolists\Components\Actions;
@@ -79,35 +78,35 @@ class Plans extends Page
                             ->hiddenLabel()
                             ->size(TextEntry\TextEntrySize::Medium)
                             ->weight(FontWeight::SemiBold)
-                            ->formatStateUsing(fn ($state, $record) => Money::fromDecimal($state / 100, Str::upper($record->currency))),
+                            ->currency(Str::upper($record->currency)),
                         RepeatableEntry::make('product.features')
                             ->label('Features')
                             ->schema([
                                 TextEntry::make('name')
-                                    ->formatStateUsing(fn ($record) => $record->valueing($record->pivot))
+                                    ->formatStateUsing(fn($record) => $record->valueing($record->pivot))
                                     ->hiddenLabel()
                                     ->columnSpan(1),
                                 TextEntry::make('name')
                                     ->hiddenLabel()
                                     ->columnSpan(2),
                                 TextEntry::make('name')
-                                    ->formatStateUsing(fn ($record) => $record->pricing($record->pivot))
+                                    ->formatStateUsing(fn($record) => $record->pricing($record->pivot))
                                     ->hiddenLabel()
                                     ->columnSpan(3),
                             ])->columns(6),
                         Actions::make([
                             Action::make('subscribe')
                                 ->icon('heroicon-m-check')
-                                ->label(fn ($record) => self::getCostumer()?->subscribed($record->stripe_id) ? __('filament-stripe::default.plans.subscribed') : __('filament-stripe::default.plans.subscribe'))
-                                ->hidden(fn ($record) => self::getCostumer()?->subscribed($record->stripe_id))
-                                ->action(fn ($record, $action) => self::subscribe($record, $action)),
+                                ->label(fn($record) => self::getCostumer()?->subscribed($record->stripe_id) ? __('filament-stripe::default.plans.subscribed') : __('filament-stripe::default.plans.subscribe'))
+                                ->hidden(fn($record) => self::getCostumer()?->subscribed($record->stripe_id))
+                                ->action(fn($record, $action) => self::subscribe($record, $action)),
                             Action::make('cancel')
                                 ->icon('heroicon-o-x-mark')
-                                ->label(fn ($record) => __('filament-stripe::default.plans.cancel'))
+                                ->label(fn($record) => __('filament-stripe::default.plans.cancel'))
                                 ->color('danger')
                                 ->requiresConfirmation()
-                                ->hidden(fn ($record) => ! self::getCostumer()?->subscribed($record->stripe_id))
-                                ->action(fn ($record, $action) => self::cancel($record, $action)),
+                                ->hidden(fn($record) => ! self::getCostumer()?->subscribed($record->stripe_id))
+                                ->action(fn($record, $action) => self::cancel($record, $action)),
                         ])
                             ->alignment(Alignment::Center)
                             ->fullWidth(),
@@ -175,7 +174,7 @@ class Plans extends Page
             $subscription = $customer->subscriptions()
                 ->whereStatus(StripeSubscription::STATUS_ACTIVE)
                 ->get()
-                ->map(fn ($record) => $record->items)
+                ->map(fn($record) => $record->items)
                 ->firstWhere('stripe_price', $record->stripe_price)
                 ->first()
                 ?->subscription;

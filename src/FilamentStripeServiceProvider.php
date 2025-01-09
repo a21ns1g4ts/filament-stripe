@@ -3,7 +3,6 @@
 namespace A21ns1g4ts\FilamentStripe;
 
 use A21ns1g4ts\FilamentStripe\Commands\WebhookCommand;
-use A21ns1g4ts\FilamentStripe\Currencies\BRL;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
 use Stripe\Stripe;
@@ -38,7 +37,5 @@ class FilamentStripeServiceProvider extends PackageServiceProvider
     public function bootingPackage(): void
     {
         Stripe::setApiKey(config('services.stripe.secret'));
-
-        currencies()->add(new BRL);
     }
 }
