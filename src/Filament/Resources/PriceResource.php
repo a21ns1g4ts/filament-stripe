@@ -21,6 +21,7 @@ class PriceResource extends Resource
 
     protected static ?string $navigationGroup = 'Stripe';
 
+    protected static string $slug = 'stripe/prices';
     public static function isScopedToTenant(): bool
     {
         return config('filament-stripe.tenant_scope', false);
@@ -35,8 +36,8 @@ class PriceResource extends Resource
                 ->schema([
                     Forms\Components\Select::make('stripe_id')
                         ->required()
-                        ->options(fn (Get $get): array => self::getPrices())
-                        ->disableOptionWhen(fn (string $value): bool => $prices->has($value))
+                        ->options(fn(Get $get): array => self::getPrices())
+                        ->disableOptionWhen(fn(string $value): bool => $prices->has($value))
                         ->searchable()
                         ->columnSpan(3),
                     Forms\Components\Select::make('product_id')
@@ -163,7 +164,7 @@ class PriceResource extends Resource
     public static function getPrices(): array
     {
         return collect(GetPrices::run(100))
-            ->map(fn ($price) => [
+            ->map(fn($price) => [
                 'id' => $price->id,
                 'text' => "{$price->nickname} - {$price->id}",
             ])

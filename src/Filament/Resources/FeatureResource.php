@@ -22,6 +22,7 @@ class FeatureResource extends Resource
 
     protected static ?string $navigationGroup = 'Stripe';
 
+    protected static string $slug = 'stripe/features';
     public static function isScopedToTenant(): bool
     {
         return config('filament-stripe.tenant_scope', false);
@@ -37,8 +38,8 @@ class FeatureResource extends Resource
                     ->schema([
                         Forms\Components\Select::make('stripe_id')
                             ->required()
-                            ->options(fn (Get $get): array => self::getFeatures())
-                            ->disableOptionWhen(fn (string $value): bool => $features->has($value))
+                            ->options(fn(Get $get): array => self::getFeatures())
+                            ->disableOptionWhen(fn(string $value): bool => $features->has($value))
                             ->searchable()
                             ->columnSpan(2),
                     ])->columns(3),
@@ -108,7 +109,7 @@ class FeatureResource extends Resource
     public static function getFeatures(): array
     {
         return collect(GetFeatures::run(100))
-            ->map(fn ($price) => [
+            ->map(fn($price) => [
                 'id' => $price->id,
                 'text' => "{$price->name} - {$price->id}",
             ])
@@ -119,7 +120,7 @@ class FeatureResource extends Resource
     public static function getPrices(): array
     {
         return collect(GetPrices::run(100))
-            ->map(fn ($price) => [
+            ->map(fn($price) => [
                 'id' => $price->id,
                 'text' => "{$price->nickname} - {$price->id}",
             ])

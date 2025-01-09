@@ -26,6 +26,8 @@ class ProductResource extends Resource
 
     protected static ?string $navigationGroup = 'Stripe';
 
+    protected static string $slug = 'stripe/products';
+
     public static function isScopedToTenant(): bool
     {
         return config('filament-stripe.tenant_scope', false);
@@ -42,8 +44,8 @@ class ProductResource extends Resource
                         Forms\Components\Select::make('stripe_id')
                             ->label('Stripe Product')
                             ->required()
-                            ->options(fn (Get $get): array => self::getProducts())
-                            ->disableOptionWhen(fn (string $value): bool => $products->has($value))
+                            ->options(fn(Get $get): array => self::getProducts())
+                            ->disableOptionWhen(fn(string $value): bool => $products->has($value))
                             ->searchable()
                             ->columnSpan(3),
                         Forms\Components\TextInput::make('stripe_id')
@@ -52,7 +54,7 @@ class ProductResource extends Resource
                             ->readOnly(),
                         Forms\Components\Select::make('type')
                             ->label('Type')
-                            ->options(collect(['plan', 'feature', 'service', 'sku'])->mapWithKeys(fn ($type) => [$type => ucfirst($type)])),
+                            ->options(collect(['plan', 'feature', 'service', 'sku'])->mapWithKeys(fn($type) => [$type => ucfirst($type)])),
                         Forms\Components\TextInput::make('name')
                             ->label('Product Name')
                             ->maxLength(255)
@@ -114,7 +116,7 @@ class ProductResource extends Resource
                                         ->columnSpan(2),
                                     Forms\Components\Select::make('price_id')
                                         ->label('Price')
-                                        ->options(Price::query()->pluck('nickname', 'id'))
+                                        ->options(Price::all()->pluck('product.name', 'id'))
                                         ->distinct()
                                         ->disableOptionsWhenSelectedInSiblingRepeaterItems()
                                         ->reactive()
@@ -151,6 +153,9 @@ class ProductResource extends Resource
                                     ->icon('heroicon-m-arrow-top-right-on-square')
                                     ->url(function (array $arguments, Repeater $component): ?string {
                                         $itemData = $component->getRawItemState($arguments['item']);
+                                        if (! $itemData['feature_id']) {
+                                            return null;
+                                        }
 
                                         $feature = Feature::find($itemData['feature_id']);
                                         if (! $feature) {
@@ -159,7 +164,7 @@ class ProductResource extends Resource
 
                                         return FeatureResource::getUrl('edit', ['record' => $feature]);
                                     }, shouldOpenInNewTab: true)
-                                    ->hidden(fn (array $arguments, Repeater $component): bool => blank($component->getRawItemState($arguments['item'])['feature_id'])),
+                                    ->hidden(fn(array $arguments, Repeater $component): bool => blank($component->getRawItemState($arguments['item'])['feature_id'])),
                             ])
                             ->orderColumn('sort')
                             ->defaultItems(0)
@@ -242,7 +247,7 @@ class ProductResource extends Resource
     public static function getProducts(): array
     {
         return collect(GetProducts::run(100))
-            ->map(fn ($product) => [
+            ->map(fn($product) => [
                 'id' => $product->id,
                 'text' => "{$product->name} - {$product->id}",
             ])

@@ -21,6 +21,7 @@ class CustomerResource extends Resource
 
     protected static ?string $navigationGroup = 'Stripe';
 
+    protected static string $slug = 'stripe/customers';
     public static function isScopedToTenant(): bool
     {
         return config('filament-stripe.tenant_scope', false);
@@ -37,8 +38,8 @@ class CustomerResource extends Resource
                     ->schema([
                         Forms\Components\Select::make('stripe_id')
                             ->required()
-                            ->options(fn (Get $get): array => self::getCustomers())
-                            ->disableOptionWhen(fn (string $value): bool => $customers->has($value))
+                            ->options(fn(Get $get): array => self::getCustomers())
+                            ->disableOptionWhen(fn(string $value): bool => $customers->has($value))
                             ->searchable()
                             ->columnSpan(3),
                         Forms\Components\TextInput::make('stripe_id')
@@ -166,7 +167,7 @@ class CustomerResource extends Resource
     public static function getCustomers(): array
     {
         return collect(GetCustomers::run())
-            ->map(fn ($customer) => [
+            ->map(fn($customer) => [
                 'id' => $customer->id,
                 'text' => "{$customer->name} ({$customer->email}) - {$customer->id}",
             ])
