@@ -146,7 +146,9 @@ class Plans extends Page
 
             $action->cancel();
         } else {
-            return CreateSubscription::run($billable, $customer, $record);
+            CreateSubscription::run($billable, $customer, $record);
+
+            return redirect(Plans::getUrl());
         }
     }
 

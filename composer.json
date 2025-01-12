@@ -18,12 +18,13 @@
     "require": {
         "php": "^8.2",
         "ariaieboy/filament-currency": "^1.10",
+        "davidhsianturi/blade-bootstrap-icons": "^1.5",
         "filament/filament": "^3.2",
         "illuminate/contracts": "^10.0||^11.0",
         "lorisleiva/laravel-actions": "^2.8",
         "novadaemon/filament-pretty-json": "^2.3",
         "spatie/laravel-package-tools": "^1.16",
-        "stripe/stripe-php": "^16.2"
+        "stripe/stripe-php": "^16.4"
     },
     "require-dev": {
         "laravel/pint": "^1.14",

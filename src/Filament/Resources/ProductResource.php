@@ -57,6 +57,7 @@ class ProductResource extends Resource
                             ->options(collect(['plan', 'feature', 'service', 'sku'])->mapWithKeys(fn ($type) => [$type => ucfirst($type)])),
                         Forms\Components\TextInput::make('name')
                             ->label('Product Name')
+                            ->prefixIcon('bi-stripe')
                             ->maxLength(255)
                             ->nullable(),
                     ])->columns(3),
