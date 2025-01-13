@@ -64,16 +64,6 @@ class Subscription extends Model
         'quantity',
     ];
 
-    public function getTable()
-    {
-        return config('filament-stripe.table_names.subscriptions', parent::getTable());
-    }
-
-    protected static function newFactory()
-    {
-        return SubscriptionFactory::new();
-    }
-
     /**
      * The attributes that should be cast to native types.
      *
@@ -106,6 +96,21 @@ class Subscription extends Model
         'trial_start' => 'integer',
         'quantity' => 'integer',
     ];
+
+    public function getTable()
+    {
+        return config('filament-stripe.table_names.subscriptions', parent::getTable());
+    }
+
+    protected static function newFactory()
+    {
+        return SubscriptionFactory::new();
+    }
+
+    public function price(): BelongsTo
+    {
+        return $this->belongsTo(Price::class, 'stripe_price', 'stripe_id');
+    }
 
     public function customer(): BelongsTo
     {

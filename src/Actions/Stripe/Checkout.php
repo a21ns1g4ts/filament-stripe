@@ -3,7 +3,6 @@
 namespace A21ns1g4ts\FilamentStripe\Actions\Stripe;
 
 use A21ns1g4ts\FilamentStripe\Actions\GetOrCreateCustomer;
-use A21ns1g4ts\FilamentStripe\Filament\Pages\Plans;
 use A21ns1g4ts\FilamentStripe\Models\Price;
 use Illuminate\Support\Facades\Redirect;
 use Lorisleiva\Actions\Concerns\AsAction;
@@ -16,7 +15,7 @@ class Checkout extends StripeBaseAction
     /**
      * Handle the checkout session creation.
      */
-    public function handle($billable, Price $price, string $mode = 'subscription', array $data = [])
+    public function handle($billable, Price $price, $successUrl = null, $cancelUrl = null, $mode = 'subscription', array $data = [])
     {
         $meteredPrices = $price->product->features()
             ->wherePivot('price_id', '!=', null)
@@ -46,8 +45,8 @@ class Checkout extends StripeBaseAction
             'line_items' => $lineItems,
             'mode' => $mode,
             'ui_mode' => 'hosted',
-            'success_url' => Plans::getUrl(),
-            'cancel_url' => Plans::getUrl(),
+            'success_url' => $successUrl,
+            'cancel_url' => $cancelUrl,
         ]);
 
         $checkoutSession = $this->stripe->checkout->sessions->create($data);
