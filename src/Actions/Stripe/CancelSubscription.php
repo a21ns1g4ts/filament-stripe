@@ -10,7 +10,7 @@ class CancelSubscription extends StripeBaseAction
 {
     use AsAction;
 
-    public function handle(Subscription $subscription, $prorate = true)
+    public function handle(Subscription $subscription, $prorate = false)
     {
         return $this->stripe->subscriptions->cancel($subscription->stripe_id, ['prorate' => $prorate]);
     }

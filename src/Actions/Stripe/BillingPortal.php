@@ -10,13 +10,13 @@ class BillingPortal extends StripeBaseAction
 {
     use AsAction;
 
-    public function handle(Customer $customer, $returnUrl = null)
+    public function handle(Customer $customer, $path = null, $returnUrl = null)
     {
         $session = $this->stripe->billingPortal->sessions->create([
             'customer' => $customer->stripe_id,
             'return_url' => $returnUrl,
         ]);
 
-        return Redirect::to($session->url, 303);
+        return Redirect::to($session->url."/$path", 303);
     }
 }

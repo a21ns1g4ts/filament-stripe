@@ -45,6 +45,9 @@ class Checkout extends StripeBaseAction
             'line_items' => $lineItems,
             'mode' => $mode,
             'ui_mode' => 'hosted',
+            'payment_method_data' => [
+                'allow_redisplay' => 'always',
+            ],
             'success_url' => $successUrl,
             'cancel_url' => $cancelUrl,
         ]);

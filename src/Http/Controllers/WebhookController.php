@@ -5,9 +5,11 @@ namespace A21ns1g4ts\FilamentStripe\Http\Controllers;
 use A21ns1g4ts\FilamentStripe\Actions\Stripe\UpdateCustomer;
 use A21ns1g4ts\FilamentStripe\Http\Middleware\VerifyWebhookSignature;
 use A21ns1g4ts\FilamentStripe\Models\Customer;
+use A21ns1g4ts\FilamentStripe\Models\Subscription;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Stripe\Stripe;
 use Stripe\Subscription as StripeSubscription;
@@ -60,7 +62,11 @@ class WebhookController extends Controller
             $data = $payload['data']['object'];
             $subscription = $customer->subscriptions()->firstOrNew(['stripe_id' => $data['id']]);
 
-            if ($data['status'] === StripeSubscription::STATUS_INCOMPLETE_EXPIRED) {
+            if (isset($data['default_payment_method']) && $data['default_payment_method'] !== null) {
+                UpdateCustomer::run($customer->stripe_id, ['invoice_settings' => ['default_payment_method' => $data['default_payment_method']]]);
+            }
+
+            if (isset($data['status']) && $data['status'] === StripeSubscription::STATUS_INCOMPLETE_EXPIRED) {
                 $subscription->items()->delete();
                 $subscription->delete();
 
@@ -189,13 +195,17 @@ class WebhookController extends Controller
             'trial_start' => $data['trial_start'],
             'ends_at' => null,
         ]);
-
-        UpdateCustomer::run($data['customer'], ['invoice_settings' => ['default_payment_method' => $data['default_payment_method']]]);
     }
 
-    protected function syncSubscriptionItems($subscription, $items)
+    protected function syncSubscriptionItems(Subscription $subscription, ?array $items)
     {
+        if (! $items) {
+            return;
+        }
+
         $subscriptionItemIds = [];
+
+        Log::debug('Syncing subscription items', ['subscription' => $subscription, 'items' => $items]);
 
         foreach ($items as $item) {
             $subscriptionItemIds[] = $item['id'];
@@ -211,6 +221,26 @@ class WebhookController extends Controller
         }
 
         $subscription->items()->whereNotIn('stripe_id', $subscriptionItemIds)->delete();
+    }
+
+    protected function handleCustomerUpdated(array $payload)
+    {
+        $data = $payload['data']['object'];
+        $customer = Customer::where('stripe_id', $data['id'])->first();
+
+        if ($customer) {
+            $fillables = $customer->getFillable();
+            foreach ($data as $key => $value) {
+                if (! in_array($key, $fillables)) {
+                    unset($data[$key]);
+                }
+            }
+
+            $customer->fill($data);
+            $customer->save();
+        }
+
+        return $this->successResponse();
     }
 
     protected function successResponse()
