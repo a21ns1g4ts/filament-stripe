@@ -6,6 +6,7 @@ use A21ns1g4ts\FilamentStripe\Actions\Stripe\GetCustomer;
 use A21ns1g4ts\FilamentStripe\Actions\Stripe\GetFeature;
 use A21ns1g4ts\FilamentStripe\Actions\Stripe\GetPrice;
 use A21ns1g4ts\FilamentStripe\Actions\Stripe\GetProduct;
+use A21ns1g4ts\FilamentStripe\Models\Product;
 use Illuminate\Database\Eloquent\Model;
 use Lorisleiva\Actions\Concerns\AsAction;
 
@@ -40,6 +41,10 @@ class UpFromStripe
 
         $fillables = $model->getFillable();
         $data['stripe_product'] = $data['product'] ?? null;
+
+        if ($model instanceof Product) {
+            unset($data['type']);
+        }
 
         foreach ($data as $key => $value) {
             if (! in_array($key, $fillables)) {
