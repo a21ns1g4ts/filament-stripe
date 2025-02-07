@@ -17,10 +17,10 @@ class TestCase extends Orchestra
         parent::setUp();
 
         Factory::guessFactoryNamesUsing(
-            fn (string $modelName) => 'A21ns1g4ts\\FilamentStripe\\Database\\Factories\\'.class_basename($modelName).'Factory'
+            fn (string $modelName) => 'A21ns1g4ts\\FilamentStripe\\Database\\Factories\\' . class_basename($modelName) . 'Factory'
         );
 
-        $this->loadMigrationsFrom(__DIR__.'/database/migrations');
+        $this->loadMigrationsFrom(__DIR__ . '/database/migrations');
 
         Stripe::setApiKey(config('services.stripe.secret'));
     }

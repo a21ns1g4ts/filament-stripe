@@ -74,7 +74,7 @@ class Feature extends Model
             return null;
         }
 
-        $pricing = money($amount, Str::upper($currency)).'/'.$billingScheme;
+        $pricing = money($amount, Str::upper($currency)) . '/' . $billingScheme;
 
         return $pricing;
     }

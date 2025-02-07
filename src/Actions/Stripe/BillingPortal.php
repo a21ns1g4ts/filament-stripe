@@ -17,6 +17,6 @@ class BillingPortal extends StripeBaseAction
             'return_url' => $returnUrl,
         ]);
 
-        return Redirect::to($session->url."/$path", 303);
+        return Redirect::to($session->url . "/$path", 303);
     }
 }

@@ -25,7 +25,7 @@ class FilamentStripePlugin implements Plugin
         return 'a21ns1g4ts.filament-stripe';
     }
 
-    public static function get(): Plugin|FilamentManager
+    public static function get(): Plugin | FilamentManager
     {
         return filament(app(static::class)->getId());
     }
