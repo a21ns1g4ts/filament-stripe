@@ -79,7 +79,7 @@ class FilamentStripeServiceProvider extends PackageServiceProvider
 
         // Handle Stubs
         if (app()->runningInConsole()) {
-            foreach (app(Filesystem::class)->files(__DIR__.'/../stubs/') as $file) {
+            foreach (app(Filesystem::class)->files(__DIR__ . '/../stubs/') as $file) {
                 $this->publishes([
                     $file->getRealPath() => base_path("stubs/filament-stripe/{$file->getFilename()}"),
                 ], 'filament-stripe-stubs');
@@ -102,8 +102,8 @@ class FilamentStripeServiceProvider extends PackageServiceProvider
     {
         return [
             // AlpineComponent::make('filament-stripe', __DIR__ . '/../resources/dist/components/filament-stripe.js'),
-            Css::make('filament-stripe-styles', __DIR__.'/../resources/dist/filament-stripe.css'),
-            Js::make('filament-stripe-scripts', __DIR__.'/../resources/dist/filament-stripe.js'),
+            // Css::make('filament-stripe-styles', __DIR__.'/../resources/dist/filament-stripe.css'),
+            // Js::make('filament-stripe-scripts', __DIR__.'/../resources/dist/filament-stripe.js'),
         ];
     }
 
