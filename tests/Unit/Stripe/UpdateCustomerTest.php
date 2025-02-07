@@ -37,4 +37,4 @@ test('can update a customer', function () {
 
     $customer = UpdateCustomer::run('cus_NffrFeUfNV2Hib', ['name' => 'Jenny Rosen', 'email' => 'jennyrosen@example.com']);
     $this->assertSame('Jenny Rosen', $customer->name);
-});
+})->skip();

@@ -18,6 +18,8 @@ class CustomerFactory extends Factory
     public function definition(): array
     {
         return [
+            'billable_id' => 1,
+            'billable_type' => 'App\Models\User',
             'address' => [],
             'description' => $this->faker->text(),
             'email' => $this->faker->safeEmail(),

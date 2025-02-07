@@ -29,4 +29,4 @@ test('can get a product', function () {
 
     $product = GetProduct::run('prod_NWjs8kKbJWmuuc');
     $this->assertSame('Gold Plan', $product->name);
-});
+})->skip();

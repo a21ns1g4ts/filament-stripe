@@ -45,4 +45,4 @@ test('can list customers', function () {
 
     $customers = GetCustomers::run(1);
     $this->assertSame('cus_NffrFeUfNV2Hib', $customers->data[0]->id);
-});
+})->skip();

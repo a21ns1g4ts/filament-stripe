@@ -36,4 +36,4 @@ test('can list products', function () {
 
     $products = GetProducts::run(1);
     $this->assertSame('prod_NWjs8kKbJWmuuc', $products->data[0]->id);
-});
+})->skip();

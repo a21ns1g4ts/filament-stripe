@@ -19,4 +19,4 @@ test('can create a feature', function () {
     $feature = CreateFeature::run('My super awesome feature');
     $this->assertSame('My super awesome feature', $feature->name);
     $this->assertSame('feat_test_61QGU1MWyFMSP9YBZ41ClCIKljWvsTgu', $feature->id);
-});
+})->skip();

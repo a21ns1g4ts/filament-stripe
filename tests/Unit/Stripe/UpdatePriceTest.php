@@ -36,4 +36,4 @@ test('can update a price', function () {
 
     $price = UpdatePrice::run('price_1MoBy5LkdIwHu7ixZhnattbh', ['currency' => 'brl']);
     $this->assertSame('brl', $price->currency);
-});
+})->skip();

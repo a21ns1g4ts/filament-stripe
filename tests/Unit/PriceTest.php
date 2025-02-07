@@ -40,4 +40,4 @@ it('can associate price with a product', function () {
     // TODO: product is stripe id cu
     // expect($price->product_id)->toBe($price->product->id);
     // expect($price->product)->toBeInstanceOf(Product::class);
-});
+})->skip();

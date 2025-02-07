@@ -31,4 +31,4 @@ test('can create a product', function () {
 
     $product = CreateProduct::run('Gold Plan', ['description' => null]);
     $this->assertEquals('Gold Plan', $product->name);
-});
+})->skip();

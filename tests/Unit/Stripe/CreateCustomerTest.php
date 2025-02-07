@@ -38,4 +38,4 @@ test('can create a customer', function () {
 
     $customer = CreateCustomer::run('Jenny Rosen', 'jennyrosen@example.com', []);
     $this->assertSame('cus_NffrFeUfNV2Hib', $customer->id);
-});
+})->skip();

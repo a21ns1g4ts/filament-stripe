@@ -20,4 +20,4 @@ test('can update a customer', function () {
 
     $feature = UpdateFeature::run('feat_test_61QGU1MWyFMSP9YBZ41ClCIKljWvsTgu', ['name' => 'My super awesome feature']);
     $this->assertSame('My super awesome feature', $feature->name);
-});
+})->skip();

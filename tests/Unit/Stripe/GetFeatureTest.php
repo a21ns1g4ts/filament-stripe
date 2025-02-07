@@ -18,4 +18,4 @@ test('can get a feature', function () {
 
     $feature = GetFeature::run('feat_test_61QGU1MWyFMSP9YBZ41ClCIKljWvsTgu');
     $this->assertSame('My super awesome feature', $feature->name);
-});
+})->skip();

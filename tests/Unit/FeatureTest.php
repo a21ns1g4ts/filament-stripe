@@ -2,16 +2,13 @@
 
 use A21ns1g4ts\FilamentStripe\Models\Feature;
 use A21ns1g4ts\FilamentStripe\Models\Price;
-use A21ns1g4ts\FilamentStripe\Models\Product;
 
 it('can create a feature', function () {
-    $product = Product::factory()->create();
     $price = Price::factory()->create();
 
     $feature = Feature::create([
         'price_id' => $price->id,
         'stripe_price' => 'price_fake_id',
-        'product_id' => $product->id,
         'name' => 'Unlimited Users',
     ]);
 

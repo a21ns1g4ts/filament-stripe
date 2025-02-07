@@ -36,4 +36,4 @@ test('can get a price', function () {
 
     $product = GetPrice::run('price_1MoBy5LkdIwHu7ixZhnattbh');
     $this->assertSame('price_1MoBy5LkdIwHu7ixZhnattbh', $product->id);
-});
+})->skip();

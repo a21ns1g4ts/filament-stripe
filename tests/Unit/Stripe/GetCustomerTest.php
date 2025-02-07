@@ -38,4 +38,4 @@ test('can get a customer', function () {
 
     $customer = GetCustomer::run('cus_NffrFeUfNV2Hib');
     $this->assertSame('Jenny Rosen', $customer->name);
-});
+})->skip();

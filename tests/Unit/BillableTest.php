@@ -3,7 +3,7 @@
 use A21ns1g4ts\FilamentStripe\Models\Customer;
 
 it('can create a customer', function () {
-    $customer = Customer::create([
+    $customer = Customer::factory()->create([
         'name' => 'John Doe',
         'email' => 'john.doe@example.com',
         'phone' => '1234567890',

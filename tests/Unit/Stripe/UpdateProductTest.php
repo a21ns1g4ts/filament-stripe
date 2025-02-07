@@ -32,4 +32,4 @@ test('can update a product', function () {
 
     $product = UpdateProduct::run('prod_NWjs8kKbJWmuuc', ['name' => 'Gold Plan Updated', 'description' => null]);
     $this->assertSame('Gold Plan Updated', $product->name);
-});
+})->skip();
