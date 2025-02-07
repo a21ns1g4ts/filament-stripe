@@ -19,7 +19,7 @@ quality to benefit the project. Many developers have different skillsets, streng
 ## Viability
 
 When requesting or submitting new features, first consider whether it might be useful to others. Open
-source projlanects are used by many developers, who may have entirely different needs to your own. Think about
+source projects are used by many developers, who may have entirely different needs to your own. Think about
 whether or not your feature is likely to be used by other users of the project.
 
 ## Procedure
