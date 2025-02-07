@@ -34,7 +34,8 @@ class SwapPlan
         );
 
         $stripeSubscription = UpdateSubscription::run(
-            $this->subscription->stripe_id, [
+            $this->subscription->stripe_id,
+            [
                 'items' => $items->values()->all(),
                 'payment_behavior' => 'allow_incomplete',
                 'promotion_code' => null,
