@@ -20,10 +20,10 @@ class WebhookCommand extends Command
         'customer.subscription.updated',
         'customer.subscription.deleted',
         'customer.updated',
-        'customer.deleted',
-        'payment_method.automatically_updated',
-        'invoice.payment_action_required',
-        'invoice.payment_succeeded',
+        // 'customer.deleted',
+        // 'payment_method.automatically_updated',
+        // 'invoice.payment_action_required',
+        // 'invoice.payment_succeeded',
     ];
 
     public function handle()
