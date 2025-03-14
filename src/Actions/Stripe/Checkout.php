@@ -45,7 +45,7 @@ class Checkout extends StripeBaseAction
             'line_items' => $lineItems,
             'mode' => $mode,
             'ui_mode' => 'hosted',
-            'allow_promotion_codes' => config('billing_portal.allow_promotion_codes'),
+            'allow_promotion_codes' => config('filament-stripe.billing_portal.allow_promotion_codes'),
             'payment_method_data' => [
                 'allow_redisplay' => 'always',
             ],
