@@ -11,4 +11,7 @@ return [
         'subscriptions' => 'filament_stripe_subscriptions',
         'subscription_items' => 'filament_stripe_subscription_items',
     ],
+    'billing_portal' => [
+        'allow_promotion_codes' => true,
+    ],
 ];
