@@ -15,10 +15,6 @@ class BillingPortal extends StripeBaseAction
         $session = $this->stripe->billingPortal->sessions->create([
             'customer' => $customer->stripe_id,
             'return_url' => $returnUrl,
-            'allow_promotion_codes' => config('billing_portal.allow_promotion_codes'),
-            'payment_method_data' => [
-                'allow_redisplay' => 'always',
-            ],
         ]);
 
         return Redirect::to($session->url . "/$path", 303);
