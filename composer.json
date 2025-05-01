@@ -18,7 +18,7 @@
     "require": {
         "php": "^8.2",
         "ariaieboy/filament-currency": "^1.10",
-        "davidhsianturi/blade-bootstrap-icons": "^1.5",
+        "davidhsianturi/blade-bootstrap-icons": "^2.0",
         "filament/filament": "^3.2",
         "illuminate/contracts": "^10.0||^11.0",
         "lorisleiva/laravel-actions": "^2.8",
