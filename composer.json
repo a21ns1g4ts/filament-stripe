@@ -24,7 +24,7 @@
         "lorisleiva/laravel-actions": "^2.8",
         "novadaemon/filament-pretty-json": "^2.3",
         "spatie/laravel-package-tools": "^1.16",
-        "stripe/stripe-php": "^17.2"
+        "stripe/stripe-php": "^18.0"
     },
     "require-dev": {
         "laravel/pint": "^1.14",
