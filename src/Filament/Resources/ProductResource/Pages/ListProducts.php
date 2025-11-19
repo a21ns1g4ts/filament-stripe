@@ -4,8 +4,8 @@ namespace A21ns1g4ts\FilamentStripe\Filament\Resources\ProductResource\Pages;
 
 use A21ns1g4ts\FilamentStripe\Filament\Resources\ProductResource;
 use Filament\Actions;
-use Filament\Resources\Components\Tab;
 use Filament\Resources\Pages\ListRecords;
+use Filament\Schemas\Components\Tabs\Tab;
 
 class ListProducts extends ListRecords
 {

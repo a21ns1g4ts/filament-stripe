@@ -5,21 +5,27 @@ namespace A21ns1g4ts\FilamentStripe\Filament\Resources;
 use A21ns1g4ts\FilamentStripe\Actions\Stripe\GetPrices;
 use A21ns1g4ts\FilamentStripe\Filament\Resources\PriceResource\Pages;
 use A21ns1g4ts\FilamentStripe\Models\Price;
+use BackedEnum;
+use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteBulkAction;
+use Filament\Actions\EditAction;
 use Filament\Forms;
-use Filament\Forms\Form;
-use Filament\Forms\Get;
+use Filament\Forms\Components\CodeEditor;
 use Filament\Resources\Resource;
+use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\Utilities\Get;
+use Filament\Schemas\Schema;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Novadaemon\FilamentPrettyJson\PrettyJson;
+use UnitEnum;
 
 class PriceResource extends Resource
 {
     protected static ?string $model = Price::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-tag';
+    protected static string | BackedEnum | null $navigationIcon = 'heroicon-o-tag';
 
-    protected static ?string $navigationGroup = 'Stripe';
+    protected static string | UnitEnum | null $navigationGroup = 'Stripe';
 
     protected static ?string $slug = 'stripe/prices';
 
@@ -28,12 +34,12 @@ class PriceResource extends Resource
         return config('filament-stripe.tenant_scope', false);
     }
 
-    public static function form(Form $form): Form
+    public static function form(Schema $schema): Schema
     {
         $prices = Price::pluck('nickname', 'stripe_id');
 
-        return $form->schema([
-            Forms\Components\Section::make('General Information')
+        return $schema->components([
+            Section::make('General Information')
                 ->schema([
                     Forms\Components\Select::make('stripe_id')
                         ->required()
@@ -52,7 +58,7 @@ class PriceResource extends Resource
                         ->disabled(),
                 ])->columns(6),
 
-            Forms\Components\Section::make('Details')
+            Section::make('Details')
                 ->schema([
                     Forms\Components\TextInput::make('stripe_id')
                         ->maxLength(255)
@@ -63,9 +69,9 @@ class PriceResource extends Resource
                     Forms\Components\TextInput::make('currency')
                         ->maxLength(255)
                         ->readonly(),
-                    PrettyJson::make('recurring')
+                    CodeEditor::make('recurring')
                         ->disabled(),
-                    PrettyJson::make('metadata')
+                    CodeEditor::make('metadata')
                         ->disabled(),
                     Forms\Components\TextInput::make('type')
                         ->readonly(),
@@ -76,15 +82,15 @@ class PriceResource extends Resource
                         ->readonly(),
                 ])->columns(3),
 
-            Forms\Components\Section::make('Advanced Settings')
+            Section::make('Advanced Settings')
                 ->schema([
                     Forms\Components\TextInput::make('billing_scheme')
                         ->readonly(),
                     Forms\Components\DateTimePicker::make('created')
                         ->readonly(),
-                    PrettyJson::make('currency_options')
+                    CodeEditor::make('currency_options')
                         ->disabled(),
-                    PrettyJson::make('custom_unit_amount')
+                    CodeEditor::make('custom_unit_amount')
                         ->disabled(),
                     Forms\Components\Toggle::make('livemode')
                         ->disabled(),
@@ -96,7 +102,7 @@ class PriceResource extends Resource
                     Forms\Components\TextInput::make('tiers_mode')
                         ->maxLength(255)
                         ->readonly(),
-                    PrettyJson::make('transform_quantity')
+                    CodeEditor::make('transform_quantity')
                         ->disabled(),
                     Forms\Components\TextInput::make('unit_amount_decimal')
                         ->maxLength(255)
@@ -136,12 +142,12 @@ class PriceResource extends Resource
             ->filters([
                 //
             ])
-            ->actions([
-                Tables\Actions\EditAction::make(),
+            ->recordActions([
+                EditAction::make(),
             ])
-            ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+            ->toolbarActions([
+                BulkActionGroup::make([
+                    DeleteBulkAction::make(),
                 ]),
             ]);
     }

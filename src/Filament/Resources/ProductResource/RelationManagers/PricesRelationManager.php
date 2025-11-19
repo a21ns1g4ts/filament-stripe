@@ -2,9 +2,8 @@
 
 namespace A21ns1g4ts\FilamentStripe\Filament\Resources\ProductResource\RelationManagers;
 
-use Filament\Forms;
-use Filament\Forms\Form;
 use Filament\Resources\RelationManagers\RelationManager;
+use Filament\Schemas\Schema;
 use Filament\Tables;
 use Filament\Tables\Table;
 
@@ -12,10 +11,10 @@ class PricesRelationManager extends RelationManager
 {
     protected static string $relationship = 'prices';
 
-    public function form(Form $form): Form
+    public function form(Schema $schema): Schema
     {
-        return $form
-            ->schema([
+        return $schema
+            ->components([
                 // Forms\Components\TextInput::make('nickname')
                 //     ->required()
                 //     ->maxLength(255),
@@ -40,11 +39,11 @@ class PricesRelationManager extends RelationManager
             ->headerActions([
                 // Tables\Actions\CreateAction::make(),
             ])
-            ->actions([
+            ->recordActions([
                 // Tables\Actions\EditAction::make(),
                 // Tables\Actions\DeleteAction::make(),
             ])
-            ->bulkActions([
+            ->toolbarActions([
                 // Tables\Actions\BulkActionGroup::make([
                 //     Tables\Actions\DeleteBulkAction::make(),
                 // ]),

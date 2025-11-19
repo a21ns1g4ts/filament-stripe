@@ -8,23 +8,30 @@ use A21ns1g4ts\FilamentStripe\Filament\Resources\ProductResource\RelationManager
 use A21ns1g4ts\FilamentStripe\Models\Feature;
 use A21ns1g4ts\FilamentStripe\Models\Price;
 use A21ns1g4ts\FilamentStripe\Models\Product;
+use BackedEnum;
+use Filament\Actions\Action;
+use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteBulkAction;
+use Filament\Actions\EditAction;
 use Filament\Forms;
-use Filament\Forms\Components\Actions\Action;
+use Filament\Forms\Components\CodeEditor;
 use Filament\Forms\Components\Repeater;
-use Filament\Forms\Form;
-use Filament\Forms\Get;
 use Filament\Resources\Resource;
+use Filament\Schemas\Components\Group;
+use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\Utilities\Get;
+use Filament\Schemas\Schema;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Novadaemon\FilamentPrettyJson\PrettyJson;
+use UnitEnum;
 
 class ProductResource extends Resource
 {
     protected static ?string $model = Product::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-shopping-bag';
+    protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-shopping-bag';
 
-    protected static ?string $navigationGroup = 'Stripe';
+    protected static string|UnitEnum|null $navigationGroup = 'Stripe';
 
     protected static ?string $slug = 'stripe/products';
 
@@ -33,162 +40,161 @@ class ProductResource extends Resource
         return config('filament-stripe.tenant_scope', false);
     }
 
-    public static function form(Form $form): Form
+    public static function form(Schema $schema): Schema
     {
         $products = Product::pluck('name', 'stripe_id');
 
-        return $form
-            ->schema([
-                Forms\Components\Section::make('Stripe Information')
-                    ->schema([
-                        Forms\Components\Select::make('stripe_id')
-                            ->label('Stripe Product')
-                            ->required()
-                            ->options(fn (Get $get): array => self::getProducts())
-                            ->disableOptionWhen(fn (string $value): bool => $products->has($value))
-                            ->searchable()
-                            ->columnSpan(3),
-                        Forms\Components\TextInput::make('stripe_id')
-                            ->label('Stripe ID')
-                            ->maxLength(255)
-                            ->readOnly(),
-                        Forms\Components\Select::make('type')
-                            ->label('Type')
-                            ->options(collect(['plan', 'feature', 'service', 'sku'])->mapWithKeys(fn ($type) => [$type => ucfirst($type)])),
-                        Forms\Components\TextInput::make('name')
-                            ->label('Product Name')
-                            ->prefixIcon('bi-stripe')
-                            ->maxLength(255)
-                            ->nullable(),
-                    ])->columns(3),
+        return $schema->components([
+            Section::make('Stripe Information')
+                ->schema([
+                    Forms\Components\Select::make('stripe_id')
+                        ->label('Stripe Product')
+                        ->required()
+                        ->options(fn (Get $get): array => self::getProducts())
+                        ->disableOptionWhen(fn (string $value): bool => $products->has($value))
+                        ->searchable()
+                        ->columnSpan(3),
+                    Forms\Components\TextInput::make('stripe_id')
+                        ->label('Stripe ID')
+                        ->maxLength(255)
+                        ->readOnly(),
+                    Forms\Components\Select::make('type')
+                        ->label('Type')
+                        ->options(collect(['plan', 'feature', 'service', 'sku'])->mapWithKeys(fn ($type) => [$type => ucfirst($type)])),
+                    Forms\Components\TextInput::make('name')
+                        ->label('Product Name')
+                        ->prefixIcon('bi-stripe')
+                        ->maxLength(255)
+                        ->nullable(),
+                ])->columns(3),
 
-                Forms\Components\Section::make('Product Attributes')
-                    ->schema([
-                        Forms\Components\TextInput::make('description')
-                            ->label('Description')
-                            ->maxLength(255)
-                            ->columnSpanFull(),
-                        Forms\Components\Group::make([
-                            Forms\Components\Toggle::make('active')
-                                ->label('Active')
-                                ->disabled(),
-                            Forms\Components\Toggle::make('livemode')
-                                ->label('Live Mode')
-                                ->disabled(),
-                            Forms\Components\Toggle::make('shippable')
-                                ->label('Shippable')
-                                ->disabled(),
-                        ]),
-                    ])->columns(3),
-
-                Forms\Components\Section::make('Additional Information')
-                    ->schema([
-                        PrettyJson::make('metadata')
-                            ->label('Metadata')
+            Section::make('Product Attributes')
+                ->schema([
+                    Forms\Components\TextInput::make('description')
+                        ->label('Description')
+                        ->maxLength(255)
+                        ->columnSpanFull(),
+                    Group::make([
+                        Forms\Components\Toggle::make('active')
+                            ->label('Active')
                             ->disabled(),
-                        PrettyJson::make('default_price_data')
-                            ->label('Default Price Data')
+                        Forms\Components\Toggle::make('livemode')
+                            ->label('Live Mode')
                             ->disabled(),
-                        PrettyJson::make('images')
-                            ->label('Images')
+                        Forms\Components\Toggle::make('shippable')
+                            ->label('Shippable')
                             ->disabled(),
-                        PrettyJson::make('marketing_features')
-                            ->label('Marketing Features')
-                            ->disabled(),
-                        PrettyJson::make('package_dimensions')
-                            ->label('Package Dimensions')
-                            ->disabled(),
-                    ])->columns(3),
+                    ]),
+                ])->columns(3),
 
-                Forms\Components\Section::make('Features')
-                    ->schema([
-                        Repeater::make('features')
-                            ->label('Features')
-                            ->relationship('featureProducts')
-                            ->schema([
-                                Forms\Components\Group::make([
-                                    Forms\Components\Select::make('feature_id')
-                                        ->label('Feature')
-                                        ->options(Feature::query()->pluck('name', 'id'))
-                                        ->required()
-                                        ->distinct()
-                                        ->disableOptionsWhenSelectedInSiblingRepeaterItems()
-                                        ->searchable()
-                                        ->columnSpan(2),
-                                    Forms\Components\Select::make('price_id')
-                                        ->label('Price')
-                                        ->options(Price::all()->pluck('product.name', 'id'))
-                                        ->distinct()
-                                        ->disableOptionsWhenSelectedInSiblingRepeaterItems()
-                                        ->reactive()
-                                        ->afterStateUpdated(function ($state, Forms\Set $set, Forms\Get $get) {
-                                            $price = Price::find($state);
+            Section::make('Additional Information')
+                ->schema([
+                    CodeEditor::make('metadata')
+                        ->label('Metadata')
+                        ->disabled(),
+                    CodeEditor::make('default_price_data')
+                        ->label('Default Price Data')
+                        ->disabled(),
+                    CodeEditor::make('images')
+                        ->label('Images')
+                        ->disabled(),
+                    CodeEditor::make('marketing_features')
+                        ->label('Marketing Features')
+                        ->disabled(),
+                    CodeEditor::make('package_dimensions')
+                        ->label('Package Dimensions')
+                        ->disabled(),
+                ])->columns(3),
 
-                                            $set('unit_amount', $price?->unit_amount);
-                                        })
-                                        ->searchable()
-                                        ->columnSpan(2),
-                                    Forms\Components\TextInput::make('unit_amount')
-                                        ->label('Unit Amount')
-                                        ->numeric()
-                                        ->nullable()
-                                        ->columnSpan(1),
-                                    Forms\Components\TextInput::make('value')
-                                        ->label('Value')
-                                        ->numeric()
-                                        ->nullable()
-                                        ->columnSpan(1),
-                                ])->columns(6),
-                                Forms\Components\Group::make([
-                                    Forms\Components\Toggle::make('resetable')
-                                        ->inline(false),
-                                    Forms\Components\Toggle::make('unlimited')
-                                        ->inline(false),
-                                    Forms\Components\Toggle::make('meteread')
-                                        ->inline(false),
-                                ])->columns(10),
-                            ])
-                            ->extraItemActions([
-                                Action::make('openService')
-                                    ->tooltip('Abrir serviço')
-                                    ->icon('heroicon-m-arrow-top-right-on-square')
-                                    ->url(function (array $arguments, Repeater $component): ?string {
-                                        $itemData = $component->getRawItemState($arguments['item']);
-                                        if (! $itemData['feature_id']) {
-                                            return null;
-                                        }
+            Section::make('Features')
+                ->schema([
+                    Repeater::make('features')
+                        ->label('Features')
+                        ->relationship('featureProducts')
+                        ->schema([
+                            Group::make([
+                                Forms\Components\Select::make('feature_id')
+                                    ->label('Feature')
+                                    ->options(Feature::query()->pluck('name', 'id'))
+                                    ->required()
+                                    ->distinct()
+                                    ->disableOptionsWhenSelectedInSiblingRepeaterItems()
+                                    ->searchable()
+                                    ->columnSpan(2),
+                                Forms\Components\Select::make('price_id')
+                                    ->label('Price')
+                                    ->options(Price::all()->pluck('product.name', 'id'))
+                                    ->distinct()
+                                    ->disableOptionsWhenSelectedInSiblingRepeaterItems()
+                                    ->reactive()
+                                    ->afterStateUpdated(function ($state, Set $set, Get $get) {
+                                        $price = Price::find($state);
 
-                                        $feature = Feature::find($itemData['feature_id']);
-                                        if (! $feature) {
-                                            return null;
-                                        }
+                                        $set('unit_amount', $price?->unit_amount);
+                                    })
+                                    ->searchable()
+                                    ->columnSpan(2),
+                                Forms\Components\TextInput::make('unit_amount')
+                                    ->label('Unit Amount')
+                                    ->numeric()
+                                    ->nullable()
+                                    ->columnSpan(1),
+                                Forms\Components\TextInput::make('value')
+                                    ->label('Value')
+                                    ->numeric()
+                                    ->nullable()
+                                    ->columnSpan(1),
+                            ])->columns(6),
+                            Group::make([
+                                Forms\Components\Toggle::make('resetable')
+                                    ->inline(false),
+                                Forms\Components\Toggle::make('unlimited')
+                                    ->inline(false),
+                                Forms\Components\Toggle::make('meteread')
+                                    ->inline(false),
+                            ])->columns(10),
+                        ])
+                        ->extraItemActions([
+                            Action::make('openService')
+                                ->tooltip('Abrir serviço')
+                                ->icon('heroicon-m-arrow-top-right-on-square')
+                                ->url(function (array $arguments, Repeater $component): ?string {
+                                    $itemData = $component->getRawItemState($arguments['item']);
+                                    if (! $itemData['feature_id']) {
+                                        return null;
+                                    }
 
-                                        return FeatureResource::getUrl('edit', ['record' => $feature]);
-                                    }, shouldOpenInNewTab: true)
-                                    ->hidden(fn (array $arguments, Repeater $component): bool => blank($component->getRawItemState($arguments['item'])['feature_id'])),
-                            ])
-                            ->orderColumn('sort')
-                            ->defaultItems(0)
-                            ->hiddenLabel()
-                            ->columnSpanFull(),
-                    ])->columns(3),
+                                    $feature = Feature::find($itemData['feature_id']);
+                                    if (! $feature) {
+                                        return null;
+                                    }
 
-                Forms\Components\Section::make('Tax and URL Information')
-                    ->schema([
-                        Forms\Components\TextInput::make('tax_code')
-                            ->label('Tax Code')
-                            ->maxLength(255)
-                            ->readOnly(),
-                        Forms\Components\TextInput::make('unit_label')
-                            ->label('Unit Label')
-                            ->maxLength(255)
-                            ->readOnly(),
-                        Forms\Components\TextInput::make('url')
-                            ->label('Product URL')
-                            ->maxLength(255)
-                            ->readOnly(),
-                    ])->columns(3),
-            ]);
+                                    return FeatureResource::getUrl('edit', ['record' => $feature]);
+                                }, shouldOpenInNewTab: true)
+                                ->hidden(fn (array $arguments, Repeater $component): bool => blank($component->getRawItemState($arguments['item'])['feature_id'])),
+                        ])
+                        ->orderColumn('sort')
+                        ->defaultItems(0)
+                        ->hiddenLabel()
+                        ->columnSpanFull(),
+                ])->columns(3),
+
+            Section::make('Tax and URL Information')
+                ->schema([
+                    Forms\Components\TextInput::make('tax_code')
+                        ->label('Tax Code')
+                        ->maxLength(255)
+                        ->readOnly(),
+                    Forms\Components\TextInput::make('unit_label')
+                        ->label('Unit Label')
+                        ->maxLength(255)
+                        ->readOnly(),
+                    Forms\Components\TextInput::make('url')
+                        ->label('Product URL')
+                        ->maxLength(255)
+                        ->readOnly(),
+                ])->columns(3),
+        ]);
     }
 
     public static function table(Table $table): Table
@@ -219,12 +225,12 @@ class ProductResource extends Resource
             ->filters([
                 //
             ])
-            ->actions([
-                Tables\Actions\EditAction::make(),
+            ->recordActions([
+                EditAction::make(),
             ])
-            ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+            ->toolbarActions([
+                BulkActionGroup::make([
+                    DeleteBulkAction::make(),
                 ]),
             ]);
     }
